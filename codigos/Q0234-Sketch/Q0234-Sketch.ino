@@ -3,8 +3,21 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 
-const char* ssid = "**********";
-const char* password = "*********";
+#define D0    16
+#define D1    5
+#define D2    4
+#define D3    0
+#define D4    2
+#define D5    14
+#define D6    12
+#define D7    13
+#define D8    15
+#define D9    3
+#define D10   1
+
+
+const char* ssid = "IFMaker Adm";
+const char* password = "@IFM4k3r";
 
 ESP8266WebServer server(80);
 
@@ -17,7 +30,7 @@ void handleRoot() {
 
   textoHTML = "Ola!! Aqui &eacute; o <b>ESP8266</b> falando! ";
   textoHTML += "Porta A0: ";
-  textoHTML += analogRead(A0);
+  textoHTML += digitalRead(0);
    
   server.send(200, "text/html", textoHTML);
   digitalWrite(led, 0);
@@ -43,7 +56,7 @@ void handleNotFound(){
 void setup(void){
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
-  Serial.begin(115200);
+  Serial.begin(9600);
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   Serial.println("");
@@ -77,4 +90,7 @@ void setup(void){
 
 void loop(void){
   server.handleClient();
+  int valor = digitalRead(D0);
+  Serial.println(valor);
+  delay(2000);
 }
