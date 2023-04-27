@@ -16,8 +16,10 @@
 #define D10   1
 
 
-const char* ssid = "IFMaker Adm";
-const char* password = "@IFM4k3r";
+//const char* ssid = "IFMaker Adm";
+//const char* password = "@IFM4k3r";
+const char* ssid = "KNET-FIBRA-MEL E MEGUI";
+const char* password = "melemegui";
 
 ESP8266WebServer server(80);
 
@@ -28,9 +30,10 @@ void handleRoot() {
 
   String textoHTML;
 
-  textoHTML = "Ola!! Aqui &eacute; o <b>ESP8266</b> falando! ";
-  textoHTML += "Porta A0: ";
-  textoHTML += digitalRead(0);
+  textoHTML += digitalRead(D0);
+  textoHTML += digitalRead(D1);
+  textoHTML += digitalRead(D2);
+  textoHTML += "<h1>OLA MUNDO</h1>";
    
   server.send(200, "text/html", textoHTML);
   digitalWrite(led, 0);
@@ -90,7 +93,10 @@ void setup(void){
 
 void loop(void){
   server.handleClient();
-  int valor = digitalRead(D0);
-  Serial.println(valor);
+  int valor1 = digitalRead(D0);
+  int valor2 = digitalRead(D1);
+  int valor3 = digitalRead(D2);
+  Serial.println(valor1, valor2,valor3);
+ 
   delay(2000);
 }
