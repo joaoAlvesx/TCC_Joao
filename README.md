@@ -4,7 +4,7 @@ DISPOSITIVO AUTÔNOMO PARA MAPEAMENTO E SOLUÇÃO DE LABIRINTOS UTILIZANDO ESP82
 
 🏫 Orientador: Me. Marcelo Christiano da França Júnior</br>
 
-🗄️ Organização do repositório: Existe a pasta de codigos, onde basicamente esta os programas que serao usados como base para formação do codigo principal  
+🗄️ Organização do repositório: Existe a pasta de codigos, basicamente nesta pastas contem os programas que serao usados como base para formação do codigo principal.
 
 
 
