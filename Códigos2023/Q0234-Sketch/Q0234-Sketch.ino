@@ -95,7 +95,7 @@ void loop(void){
   server.handleClient();
   int valor1 = digitalRead(D0);
   int valor2 = digitalRead(D1);
-  int valor3 = digitalRead(D2);
+  int valor3 = digitalRead(D2); 
   Serial.println(valor1, valor2,valor3);
  
   delay(2000);

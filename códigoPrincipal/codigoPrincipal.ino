@@ -7,8 +7,8 @@
 #define D10   1
 
 
-int in1 = 5;
-int in2 = 0 ;
+int in1 = 5;//d1
+int in2 = 0 ;//d3
 int in12 = 4;
 int in22 = 2 ;
 
@@ -39,7 +39,7 @@ void setup()
 {
    analogWrite(in1, 255);
    analogWrite(in2, 0);
-   delay(1000);
+   delay(1000)
    Serial.print("motor parou ");
     
 }
