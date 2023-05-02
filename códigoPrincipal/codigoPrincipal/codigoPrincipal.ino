@@ -33,14 +33,23 @@ void setup()
   pinMode(sensor2, INPUT); 
   pinMode(sensor3, INPUT); 
 
+   analogWrite(in1, 0);
+   analogWrite(in2, 0);
+
 }
 
   void frente()
 {
    analogWrite(in1, 255);
    analogWrite(in2, 0);
-   delay(1000)
+   analogWrite(in12, 255);
+   analogWrite(in22, 0);
+   delay(1000);
    Serial.print("motor parou ");
+   analogWrite(in1, 0);
+   analogWrite(in2, 0);
+   analogWrite(in12, 0);
+   analogWrite(in22, 0);
     
 }
 
