@@ -29,22 +29,24 @@ int valor2;
 int valor3;
 
 
-int x = 6;
-int y = 6;
+int x = 4;
+int y = 0;
+#define tam 4
+
+bool saida = false;
+
+//O = 0 N = 1 L=2 S=3
 
 
-bool saida == false;
-int ref = L;
+int ref = 1;
 
-int matriz[x][y]=
+int matriz [tam][tam] =
 {
-  
-  
-  {0,0,0,0},
   {0,0,0,0},
   {0,0,0,0},
   {0,0,0,0},
   {0,0,0,0}
+
 };
 
 
@@ -63,125 +65,120 @@ void setup()
   pinMode(sensor3, INPUT);
 
 
-   analogWrite(in1, 0);
-   analogWrite(in2, 0);
+  
 
 
 }
-
+void pos(){
+ if(ref == 0){
+    x--;
+    matriz [x][y] = 1;
+    x--;
+}
+  else if(ref == 1){
+    y++;
+    matriz [x][y] = 1;
+    y++;
+}
+  else if(ref == 2){
+    x++;
+    matriz [x][y] = 1;
+    x++;
+  }
+  else if(ref == 3){
+    y--;
+    matriz [x][y] = 1;
+    y--;
+  }
+}
 void frente(){
  
   //mover motores
 
-  if (ref == L){
-    x++;
-  }
-  else if (ref == O){
+  if(ref == 0){
+    x--;
+    matriz [x][y] = 1;
     x--;
   }
-  else if (ref == N){
+  else if(ref == 1){
+    y++;
+    matriz [x][y] = 1;
     y++;
   }
-  else if (ref == S){
+  else if(ref == 2){
+    x++;
+    matriz [x][y] = 1;
+    x++;
+  }
+  else if(ref == 3){
+    y--;
+    matriz [x][y] = 1;
     y--;
   }
 
 }
 
 void direita(){
-  
-  if(ref == L){
-    ref = S;
-  }
-
-  else if(ref == S){
-    ref = O;
-  }
-  else if(ref == O){
-    ref = N;
-  }
-  else if(ref == N){
-    ref = L;
-  }
 
   //mover motores
 
-  if (ref == L){
-    x++;
-  }
-  else if (ref == O){
-    x--;
-  }
-  else if (ref == N){
-    y++;
-  }
-  else if (ref == S){
-    y--;
-  }
+  if(ref == 0)
+    ref == 1;
+  else if(ref == 1)
+    ref == 2;
+  else if(ref == 2)
+    ref == 3;
+  else if(ref == 3)
+    ref == 0;
+
+  pos();
 
 }
 
+  
+
 void esquerda(){
   
-  if(ref == L){
-    ref = N;
-  }
-
-  else if(ref == N){
-    ref = O;
-  }
-  else if(ref == O){
-    ref = S;
-  }
-  else if(ref == S){
-    ref = L;
-  }
 
   //mover motores
 
-  if (ref == L){
-    x++;
-  }
-  else if (ref == O){
-    x--;
-  }
-  else if (ref == N){
-    y++;
-  }
-  else if (ref == S){
-    y--;
-  }
+  if(ref == 0)
+    ref == 3;
+  else if(ref == 3)
+    ref == 2;
+  else if(ref == 2)
+    ref == 1;
+  else if(ref == 1)
+    ref == 0;
+
+  pos();
+
 
 }
 
 void retorno(){
-  if(ref == L){
-    ref = O;
-  }
-
-  else if(ref == O){
-    ref = L;
-  }
-  else if(ref == N){
-    ref = S;
-  }
-  else if(ref == S){
-    ref = N;
-  }
-
-  if (ref == L){
-    x++;
-  }
-  else if (ref == O){
-    x--;
-  }
-  else if (ref == N){
-    y++;
-  }
-  else if (ref == S){
-    y--;
-  }
 }
+
+
+void paredes(){
+   if(ref == 0 || ref == 2){
+      y--;
+      matriz  [x][y] = 0;
+      y+2;
+      matriz  [x][y] = 0;
+      y--;
+
+    } 
+    else if(ref == 1 || ref == 3){
+      x--;
+      matriz [x][y] = 0;
+      x+2;
+      matriz [x][y] = 0;
+      x--;
+    }
+}
+
+
 
   void loop()
 {
@@ -191,70 +188,56 @@ void retorno(){
  //Serial.print(valor2); //valor invertido;
   valor3 = digitalRead(sensor3);
   //Serial.print(valor3);
-  //Serial.println(" ");
+  
 
 
- /* if(valor1 == 1 and valor2 == 1 and valor3 ==1)
-    Serial.println("tudo 1");
-  else if(valor1 == 1 and valor2 == 1 and valor3 ==0)
-    Serial.println("1 1 0");
-  else if(valor1 == 1 and valor2 == 0 and valor3 ==1)
-    Serial.println("1 e 0 1");
-  else if(valor1 == 0 and valor2 == 1 and valor3 ==1)
-    Serial.println("0 e 1 1");
-    else if(valor1 == 0 and valor2 == 1 and valor3 ==0)
-    Serial.println("10");
-    else if(valor1 == 0 and valor2 == 0 and valor3 ==0)
-    Serial.println("0");
-    else if(valor1 == 0 and valor2 == 0 and valor3 ==1)
-    Serial.println("1");
-    else if(valor1 == 1 and valor2 == 0 and valor3 ==0)
-    Serial.println("100");*/
+  matriz [0][0] = 1;
 
-
-  matriz = [0][0] = "O"
-
+  //O = 0 N = 1 L=2 S=3
 
   while(saida == false){
     //Somente frente disponivel
-    if(valor1 == 0 and valor2 == 1 and valor3 ==0){
-    
-  
-    frente()
-    matriz = [x][y] = "L";
-    
-  
-    }
+  if(valor1 == 0 and valor2 == 1 and valor3 ==0){
+    paredes();
+    frente();
+    matriz  [x][y] = 1;
+}
 
-    if(valor1 == 0 and valor2 == 0 and valor3 ==1){
-    direita()
-    matriz = [x][y] = "L";
-   
-    
+  else if(valor1 == 0 and valor2 == 0 and valor3 ==1){
+    paredes();
+    direita();
+    matriz  [x][y] = 1;
     }
    
-    if(valor1 == 1 and valor2 == 0 and valor3 ==0){
-    esquerda()
-    matriz = [x][y] = "L";
-    
-    
+  else if(valor1 == 1 and valor2 == 0 and valor3 ==0){
+    paredes();
+    esquerda();
+    matriz  [x][y] = 1;
     }
    
-   if(valor1 == 0 and valor2 == 0 and valor3 ==0){
-    matriz = [x][y] = "B";
-    retorno()
-    
-    
-    
-    
-    
+ 
+ 
+ 
+  else if(valor1 == 0 and valor2 == 0 and valor3 ==0){
+    matriz  [x][y] = 1;
+    retorno();
     }
-   
-
+  else if(valor1 == 0 and valor2 == 1 and valor3 ==1){
+    direita();
+    matriz  [x][y] = 1;
+    }
+  else if(valor1 == 1 and valor2 == 0 and valor3 ==1){
+    direita();
+    matriz  [x][y] = 1;
+    }
+  else if(valor1 == 1 and valor2 == 1 and valor3 ==0){
+    frente();
+    matriz  [x][y] = 1;
+    }
+  else if(valor1 == 1 and valor2 == 1 and valor3 ==1)
+    saida == true;
 
   };
-
-
 
 
 
