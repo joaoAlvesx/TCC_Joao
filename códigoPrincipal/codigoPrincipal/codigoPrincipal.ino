@@ -34,6 +34,7 @@ int y = 0;
 #define tam 4
 
 bool saida = false;
+int escolher = 0;
 
 //O = 0 N = 1 L=2 S=3
 
@@ -159,23 +160,138 @@ void esquerda(){
 void retorno(){
 }
 
-
-void paredes(){
-   if(ref == 0 || ref == 2){
+void paredes(bool E, bool F, bool D){
+  //O = 0 N = 1 L=2 S=3
+  //false = parede
+if(ref == 0 ){
+  if (false,true,false){
       y--;
       matriz  [x][y] = 0;
       y+2;
       matriz  [x][y] = 0;
       y--;
-
-    } 
-    else if(ref == 1 || ref == 3){
+    }
+    else if(false,false,true){
+      y--;
+      matriz  [x][y] = 0;
+      y++;
       x--;
-      matriz [x][y] = 0;
-      x+2;
-      matriz [x][y] = 0;
+      matriz  [x][y] = 0;
+      x++;
+    }
+    else if (true,false,false){
+      x--;
+      matriz  [x][y] = 0;
+      x++;
+      y++;
+      matriz  [x][y] = 0;
+      y--;
+    }
+    else if (false,true,true){
+      y--;
+      matriz  [x][y] = 0;
+      y++;
+    }
+    else if (true,false,true){
+      x--;
+      matriz  [x][y] = 0;
+      x++
+    }
+    else if (true,true,false){
+      y++;
+      matriz  [x][y] = 0;
+      y--;
+    }
+    
+} 
+
+  else if (ref == 2){
+    if (false,true,false){
+      y++;
+      matriz  [x][y] = 0;
+      y-2;
+      matriz  [x][y] = 0;
+      y++;
+    }
+    else if(false,false,true){
+      y++;
+      matriz  [x][y] = 0;
+      y--;
+      x++;
+      matriz  [x][y] = 0;
       x--;
     }
+    else if (true,false,false){
+      x++;
+      matriz  [x][y] = 0;
+      x--;
+      y--;
+      matriz  [x][y] = 0;
+      y++;
+    }
+
+    else if (false,true,true){
+      y++;
+      matriz  [x][y] = 0;
+      y--;
+    }
+    else if (true,false,true){
+      x++;
+      matriz  [x][y] = 0;
+      x--;
+    }
+    else if (true,true,false){
+      y--;
+      matriz  [x][y] = 0;
+      y++;
+  }
+
+}
+  else if(ref == 1){
+
+    if (false,true,false){
+
+    }
+    else if(false,false,true){
+      
+    }
+    else if (true,false,false){
+      
+    }
+    else if (false,true,true){
+      
+    }
+    else if (true,false,true){
+      
+    }
+    else if (true,true,false){
+      
+    }
+    }
+    if ( ref == 3){
+      if (false,true,false){
+
+    }
+    else if(false,false,true){
+      
+    }
+    else if (true,false,false){
+      
+    }
+    else if (false,true,true){
+      
+    }
+    else if (true,false,true){
+      
+    }
+    else if (true,true,false){
+      
+    }
+
+    }
+
+
+
 }
 
 
@@ -198,42 +314,73 @@ void paredes(){
   while(saida == false){
     //Somente frente disponivel
   if(valor1 == 0 and valor2 == 1 and valor3 ==0){
-    paredes();
+    paredes(false,true,false);
     frente();
     matriz  [x][y] = 1;
 }
 
   else if(valor1 == 0 and valor2 == 0 and valor3 ==1){
-    paredes();
+    paredes(false,false,true);
     direita();
     matriz  [x][y] = 1;
     }
    
   else if(valor1 == 1 and valor2 == 0 and valor3 ==0){
-    paredes();
+    paredes(true,false,false);
     esquerda();
     matriz  [x][y] = 1;
     }
-   
- 
- 
- 
+
   else if(valor1 == 0 and valor2 == 0 and valor3 ==0){
+    paredes(false,false,false);
     matriz  [x][y] = 1;
     retorno();
     }
+
+
   else if(valor1 == 0 and valor2 == 1 and valor3 ==1){
-    direita();
-    matriz  [x][y] = 1;
+    escolher = random(1,2);
+    if (escolher == 1){
+      paredes(false,true,true);
+      frente();
+      matriz  [x][y] = 1;
+    }
+    else if (escolher == 2){
+      paredes(false,true,true);
+      direita();
+      matriz  [x][y] = 1;
+    }
+  
+   
     }
   else if(valor1 == 1 and valor2 == 0 and valor3 ==1){
-    direita();
-    matriz  [x][y] = 1;
+   escolher = random(1,2);
+    if (escolher == 1){
+      paredes(true,false,true);
+      esquerda();
+      matriz  [x][y] = 1;
+    }
+    else if (escolher == 2){
+      paredes(true,false,true);
+      direita();
+      matriz  [x][y] = 1;
+    }
+  
     }
   else if(valor1 == 1 and valor2 == 1 and valor3 ==0){
-    frente();
-    matriz  [x][y] = 1;
+    escolher = random(1,2);
+    if (escolher == 1){
+      paredes(true,true,false);
+      esquerda();
+      matriz  [x][y] = 1;
     }
+    else if (escolher == 2){
+      paredes(true,true,false);
+      frente();
+      matriz  [x][y] = 1;
+    }
+  }
+  
   else if(valor1 == 1 and valor2 == 1 and valor3 ==1)
     saida == true;
 
