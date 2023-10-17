@@ -1,8 +1,3 @@
-#include <ESP8266WiFi.h>
-#include <WiFiClient.h>
-#include <ESP8266WebServer.h>
-#include <ESP8266mDNS.h>
-
 #define D0    16
 #define D1    5
 #define D2    4
@@ -15,88 +10,448 @@
 #define D9    3
 #define D10   1
 
+//Wifi 
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
 
-//const char* ssid = "IFMaker Adm";
-//const char* password = "@IFM4k3r";
-const char* ssid = "KNET-FIBRA-MEL E MEGUI";
-const char* password = "melemegui";
-
+// Configração do WiFi
+const char* ssid = "IFMaker Adm";  // SSID Wifi
+const char* password = "@IFM4k3r";  // Senha Wifi
 ESP8266WebServer server(80);
+bool LEDstatus = LOW;
+int teste = 1;
 
-const int led = 2;
+//sensores
+int sensor1 = D0;//Esquerda azul/
+int sensor2 = D5;//Frente/
+int sensor3 = D6;//Direita branco
 
-void handleRoot() {
-  digitalWrite(led, 1);
+int valor1;
+int valor2;
+int valor3;
 
-  String textoHTML;
 
-  textoHTML += digitalRead(D0);
-  textoHTML += digitalRead(D1);
-  textoHTML += digitalRead(D2);
-  textoHTML += "<h1>OLA MUNDO</h1>";
-   
-  server.send(200, "text/html", textoHTML);
-  digitalWrite(led, 0);
-}
+//MOTORES
+const int pwmMotorA = D1;
+const int pwmMotorB = D2;
+const int dirMotorA = D3;
+const int dirMotorB = D4;
 
-void handleNotFound(){
-  digitalWrite(led, 1);
-  String message = "File Not Found\n\n";
-  message += "URI: ";
-  message += server.uri();
-  message += "\nMethod: ";
-  message += (server.method() == HTTP_GET)?"GET":"POST";
-  message += "\nArguments: ";
-  message += server.args();
-  message += "\n";
-  for (uint8_t i=0; i<server.args(); i++){
-    message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
-  }
-  server.send(404, "text/plain", message);
-  digitalWrite(led, 0);
-}
+int motorSpeed = 100;
+int motorSpeedNegativo = -100;
 
-void setup(void){
-  pinMode(led, OUTPUT);
-  digitalWrite(led, 0);
+//Matriz
+int x = 4;
+int y = 0;
+#define tam 4
+//variaveis auxiliares
+bool saida = false;
+int escolher = 0;
+
+//O = 0 N = 1 L=2 S=3
+int ref = 1;
+
+int matriz [tam][tam] =
+{
+  {0,0,0,0},
+  {0,0,0,0},
+  {0,0,0,0},
+  {0,0,0,0}
+
+};
+
+
+
+
+void setup()
+{
   Serial.begin(9600);
+
+  pinMode(pwmMotorA , OUTPUT);
+  pinMode(pwmMotorB, OUTPUT);
+  pinMode(dirMotorA, OUTPUT);
+  pinMode(dirMotorB, OUTPUT);
+  pinMode(sensor1, INPUT);
+  pinMode(sensor2, INPUT);
+  pinMode(sensor3, INPUT);
+
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   Serial.println("");
-
-  // Wait for connection
+  
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
   Serial.println("");
-  Serial.print("Connected to ");
+  Serial.print("Rede WiFi: ");
   Serial.println(ssid);
-  Serial.print("IP address: ");
+  Serial.print("Endereço IP: ");
   Serial.println(WiFi.localIP());
+  delay(100);
 
-  if (MDNS.begin("esp8266")) {
-    Serial.println("MDNS responder started");
+  server.on("/", handle_OnConnect);
+  server.on("/ledon", handle_ledon);
+  server.on("/ledoff", handle_ledoff);
+  server.onNotFound(handle_NotFound);
+  server.begin();
+  Serial.println("Servidor HTTP iniciado!");
+
+}
+void pos(){
+ if(ref == 0){
+    x--;
+    matriz [x][y] = 1;
+    x--;
+}
+  else if(ref == 1){
+    y++;
+    matriz [x][y] = 1;
+    y++;
+}
+  else if(ref == 2){
+    x++;
+    matriz [x][y] = 1;
+    x++;
+  }
+  else if(ref == 3){
+    y--;
+    matriz [x][y] = 1;
+    y--;
+  }
+}
+void frente(){
+ 
+  analogWrite(pwmMotorA, motorSpeed+27  );
+  digitalWrite(dirMotorA, LOW);
+  analogWrite(pwmMotorB, motorSpeed);
+  digitalWrite(dirMotorB, LOW);
+  delay(1500);
+
+  if(ref == 0){
+    x--;
+    matriz [x][y] = 1;
+    x--;
+  }
+  else if(ref == 1){
+    y++;
+    matriz [x][y] = 1;
+    y++;
+  }
+  else if(ref == 2){
+    x++;
+    matriz [x][y] = 1;
+    x++;
+  }
+  else if(ref == 3){
+    y--;
+    matriz [x][y] = 1;
+    y--;
   }
 
-  server.on("/", handleRoot);
-
-  server.on("/inline", [](){
-    server.send(200, "text/plain", "this works as well");
-  });
-
-  server.onNotFound(handleNotFound);
-
-  server.begin();
-  Serial.println("HTTP server started");
 }
 
-void loop(void){
-  server.handleClient();
-  int valor1 = digitalRead(D0);
-  int valor2 = digitalRead(D1);
-  int valor3 = digitalRead(D2); 
-  Serial.println(valor1, valor2,valor3);
+void direita(){
+
+  analogWrite(pwmMotorA, motorSpeed+27  );
+  digitalWrite(dirMotorA, HIGH);
+  analogWrite(pwmMotorB, motorSpeed);
+  digitalWrite(dirMotorB, LOW);
+  delay(1100);
+
+  analogWrite(pwmMotorA, motorSpeed );
+  digitalWrite(dirMotorA, LOW);
+  analogWrite(pwmMotorB, motorSpeed);
+  digitalWrite(dirMotorB, LOW);
+  delay(1000);
+
+  if(ref == 0)
+    ref == 1;
+  else if(ref == 1)
+    ref == 2;
+  else if(ref == 2)
+    ref == 3;
+  else if(ref == 3)
+    ref == 0;
+
+  pos();
+
+}
+
+  
+
+void esquerda(){
+  
+
+  analogWrite(pwmMotorA, motorSpeed+27  );
+  digitalWrite(dirMotorA, LOW);
+  analogWrite(pwmMotorB, motorSpeed);
+  digitalWrite(dirMotorB, HIGH);
+  delay(1100);
+
+  analogWrite(pwmMotorA, motorSpeed  );
+  digitalWrite(dirMotorA, LOW);
+  analogWrite(pwmMotorB, motorSpeed);
+  digitalWrite(dirMotorB, LOW);
+  delay(1000);
+
+  if(ref == 0)
+    ref == 3;
+  else if(ref == 3)
+    ref == 2;
+  else if(ref == 2)
+    ref == 1;
+  else if(ref == 1)
+    ref == 0;
+
+  pos();
+
+
+}
+
+void retorno(){
+}
+
+void paredes(bool E, bool F, bool D){
+  //O = 0 N = 1 L=2 S=3
+  //false = parede
+if(ref == 0 ){
+  if (false,true,false){
+      y--;
+      matriz  [x][y] = 0;
+      y+2;
+      matriz  [x][y] = 0;
+      y--;
+    }
+    else if(false,false,true){
+      y--;
+      matriz  [x][y] = 0;
+      y++;
+      x--;
+      matriz  [x][y] = 0;
+      x++;
+    }
+    else if (true,false,false){
+      x--;
+      matriz  [x][y] = 0;
+      x++;
+      y++;
+      matriz  [x][y] = 0;
+      y--;
+    }
+    else if (false,true,true){
+      y--;
+      matriz  [x][y] = 0;
+      y++;
+    }
+    else if (true,false,true){
+      x--;
+      matriz  [x][y] = 0;
+      x++;
+    }
+    else if (true,true,false){
+      y++;
+      matriz  [x][y] = 0;
+      y--;
+    }
+    
+} 
+
+  else if (ref == 2){
+    if (false,true,false){
+      y++;
+      matriz  [x][y] = 0;
+      y-2;
+      matriz  [x][y] = 0;
+      y++;
+    }
+    else if(false,false,true){
+      y++;
+      matriz  [x][y] = 0;
+      y--;
+      x++;
+      matriz  [x][y] = 0;
+      x--;
+    }
+    else if (true,false,false){
+      x++;
+      matriz  [x][y] = 0;
+      x--;
+      y--;
+      matriz  [x][y] = 0;
+      y++;
+    }
+
+    else if (false,true,true){
+      y++;
+      matriz  [x][y] = 0;
+      y--;
+    }
+    else if (true,false,true){
+      x++;
+      matriz  [x][y] = 0;
+      x--;
+    }
+    else if (true,true,false){
+      y--;
+      matriz  [x][y] = 0;
+      y++;
+  }
+
+}
+  else if(ref == 1){
+
+    if (false,true,false){
+
+    }
+    else if(false,false,true){
+      
+    }
+    else if (true,false,false){
+      
+    }
+    else if (false,true,true){
+      
+    }
+    else if (true,false,true){
+      
+    }
+    else if (true,true,false){
+      
+    }
+    }
+    if ( ref == 3){
+      if (false,true,false){
+
+    }
+    else if(false,false,true){
+      
+    }
+    else if (true,false,false){
+      
+    }
+    else if (false,true,true){
+      
+    }
+    else if (true,false,true){
+      
+    }
+    else if (true,true,false){
+      
+    }
+
+    }
+
+
+
+}
+
+
+
+  void loop()
+{
+  server.handleClient();    // Faz o Handle
+  String SendHTML(uint8_t led) {
+  String ptr = "<!DOCTYPE html>\n";
+  ptr += "<html>\n";
+  ptr += "<head>\n";
+  ptr += "<title>Controle do LED</title>\n";
+  ptr += "</head>\n";
+  ptr += "<body>\n";
+  ptr += teste;
+  }
+
+  matriz [0][0] = 1;
+
+  //O = 0 N = 1 L=2 S=3
+    
  
-  delay(2000);
+    //Somente frente disponivel
+
+    valor1 = digitalRead(sensor1);
+  //Serial.print(valor1);//Diminuir energia**/
+  valor2 = digitalRead(sensor2);
+ //Serial.print(valor2); //valor invertido;
+  valor3 = digitalRead(sensor3);
+  //Serial.print(valor3
+  Serial.println(valor1);
+  Serial.print(valor2);
+  Serial.print(valor3);
+    
+  if(valor1 == 0 and valor2 == 1 and valor3 ==0){
+    paredes(false,true,false);
+    frente();
+    matriz  [x][y] = 1;
+}
+
+  else if(valor1 == 0 and valor2 == 0 and valor3 ==1){
+    paredes(false,false,true);
+    direita();
+    matriz  [x][y] = 1;
+    }
+   
+  else if(valor1 == 1 and valor2 == 0 and valor3 ==0){
+    paredes(true,false,false);
+    esquerda();
+    matriz  [x][y] = 1;
+    }
+
+  else if(valor1 == 0 and valor2 == 0 and valor3 ==0){
+    paredes(false,false,false);
+    matriz  [x][y] = 1;
+    retorno();
+    }
+
+
+  else if(valor1 == 0 and valor2 == 1 and valor3 ==1){
+    escolher = random(1,2);
+    if (escolher == 1){
+      paredes(false,true,true);
+      frente();
+      matriz  [x][y] = 1;
+    }
+    else if (escolher == 2){
+      paredes(false,true,true);
+      direita();
+      matriz  [x][y] = 1;
+    }
+  
+   
+    }
+  else if(valor1 == 1 and valor2 == 0 and valor3 ==1){
+   escolher = random(1,2);
+    if (escolher == 1){
+      paredes(true,false,true);
+      esquerda();
+      matriz  [x][y] = 1;
+    }
+    else if (escolher == 2){
+      paredes(true,false,true);
+      direita();
+      matriz  [x][y] = 1;
+    }
+  
+    }
+  else if(valor1 == 1 and valor2 == 1 and valor3 ==0){
+    escolher = random(1,2);
+    if (escolher == 1){
+      paredes(true,true,false);
+      esquerda();
+      matriz  [x][y] = 1;
+    }
+    else if (escolher == 2){
+      paredes(true,true,false);
+      frente();
+      matriz  [x][y] = 1;
+    }
+  }
+  
+  /*else if(valor1 == 1 and valor2 == 1 and valor3 ==1)
+    Serial.print(sai);
+
+  };*/
+
+
+
+
 }
