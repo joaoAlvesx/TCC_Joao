@@ -47,7 +47,7 @@ int motorSpeedNegativo = -100;
 //Matriz
 int x = 4;
 int y = 0;
-#define tam 8
+#define tam 12
 //variaveis auxiliares
 bool saida = false;
 int escolher = 0;
@@ -57,14 +57,19 @@ int ref = 1;
 
 int matriz [tam][tam] =
 {
-  {0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0},
-  {0,0,0,0,0,0,0,0}
+
+{0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0}
 
 };
 
@@ -119,7 +124,8 @@ void setup()
 */
 }
 
-void pos(){
+void pos(int ref){
+  
  if(ref == 0){
     x--;
     matriz [x][y] = 1;
@@ -199,7 +205,7 @@ void direita(){
   else if(ref == 3)
     ref == 0;
 
-  pos();
+  pos(ref);
   test = 2;
 }
 
@@ -232,7 +238,7 @@ void esquerda(){
   else if(ref == 1)
     ref == 0;
 
-  pos();
+  pos(ref);
   test = 3;
  
 }
@@ -437,7 +443,7 @@ if(ref == 0 ){
   valor1 = digitalRead(sensor1);
   Serial.print(valor1);//Diminuir energia**/
   valor2 = digitalRead(sensor2);
- Serial.print(valor2); //valor invertido;
+  Serial.print(valor2); //valor invertido;
   valor3 = digitalRead(sensor3);
   Serial.print(valor3);
   
@@ -461,9 +467,7 @@ if(ref == 0 ){
     }
 
   else if(valor1 == 0 and valor2 == 0 and valor3 ==0){
-    paredes(false,false,false);
-    matriz  [x][y] = 1;
-    retorno();
+    Serial.println("Nenhum canto");
     }
 
 
