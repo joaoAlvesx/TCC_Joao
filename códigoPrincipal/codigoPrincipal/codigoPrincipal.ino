@@ -45,7 +45,7 @@ int motorSpeed = 100;
 int motorSpeedNegativo = -100;
 
 //Matriz
-int x = 4;
+int x = 0;
 int y = 0;
 #define tam 12
 //variaveis auxiliares
@@ -53,7 +53,7 @@ bool saida = false;
 int escolher = 0;
 
 //O = 0 N = 1 L=2 S=3
-int ref = 1;
+int ref = 3;
 
 int matriz [tam][tam] =
 {
@@ -74,8 +74,8 @@ int matriz [tam][tam] =
 };
 
 void mostrar_matriz(){
-  for (int y = 0; y<8;y++){
-    for (int x = 0; x<8;x++){
+  for (int y = 0; y<12;y++){
+    for (int x = 0; x<12;x++){
       Serial.print(matriz[x][y]);
     }
     Serial.println(" ");
@@ -88,7 +88,7 @@ void mostrar_matriz(){
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
  // system_update_cpu_freq(160);
  
 
@@ -124,17 +124,17 @@ void setup()
 */
 }
 
-void pos(int ref){
-  
+void pos(){
+  //O = 0 N = 1 L=2 S=3
  if(ref == 0){
     x--;
     matriz [x][y] = 1;
     x--;
 }
   else if(ref == 1){
-    y++;
+    y--;
     matriz [x][y] = 1;
-    y++;
+    y--;
 }
   else if(ref == 2){
     x++;
@@ -142,18 +142,20 @@ void pos(int ref){
     x++;
   }
   else if(ref == 3){
-    y--;
+    y++;
     matriz [x][y] = 1;
-    y--;
+    y++;
   }
+  Serial.print("ref =");
+  Serial.print(ref);
 }
 void frente(){
   
-  analogWrite(pwmMotorA, motorSpeed+27  );
+  analogWrite(pwmMotorA, motorSpeed);
   digitalWrite(dirMotorA, LOW);
   analogWrite(pwmMotorB, motorSpeed);
   digitalWrite(dirMotorB, LOW);
-  delay(1500);
+  delay(2500);
 
   if(ref == 0){
     x--;
@@ -161,9 +163,9 @@ void frente(){
     x--;
   }
   else if(ref == 1){
-    y++;
+    y--;
     matriz [x][y] = 1;
-    y++;
+    y--;
   }
   else if(ref == 2){
     x++;
@@ -171,16 +173,18 @@ void frente(){
     x++;
   }
   else if(ref == 3){
-    y--;
+    y++;
     matriz [x][y] = 1;
-    y--;
+    y++;
   }
-  test = 1;
+ Serial.println("frente" );
+   Serial.print("ref =");
+  Serial.print(ref);
 
 }
 
 void direita(){
-
+//O = 0 N = 1 L=2 S=3
  while (valor2 == 0 and valor1 == 0){
     valor2 = digitalRead(sensor2);
     valor1 = digitalRead(sensor1);
@@ -197,16 +201,17 @@ void direita(){
   delay(1000);
 
   if(ref == 0)
-    ref == 1;
+    ref = 1;
   else if(ref == 1)
-    ref == 2;
+    ref = 2;
   else if(ref == 2)
-    ref == 3;
+    ref = 3;
   else if(ref == 3)
-    ref == 0;
+    ref = 0;
 
-  pos(ref);
-  test = 2;
+  pos();
+ 
+  Serial.println("Direita");
 }
 
   
@@ -230,207 +235,50 @@ void esquerda(){
   delay(1000);
 
   if(ref == 0)
-    ref == 3;
+    ref = 3;
   else if(ref == 3)
-    ref == 2;
+    ref = 2;
   else if(ref == 2)
-    ref == 1;
+    ref = 1;
   else if(ref == 1)
-    ref == 0;
+    ref = 0;
 
-  pos(ref);
-  test = 3;
- 
+  pos();
+
+   Serial.println("Esquerda");
 }
 
 void retorno(){
-}
-
-void paredes(bool E, bool F, bool D){
-  //O = 0 N = 1 L=2 S=3
-  //false = parede
-if(ref == 0 ){
-  if (E == false and F == true and D == false){
-      y--;
-      matriz  [x][y] = 0;
-      y+2;
-      matriz  [x][y] = 0;
-      y--;
-    }
-    else if(E == false and F == false and D == true){
-      y--;
-      matriz  [x][y] = 0;
-      y++;
-      x--;
-      matriz  [x][y] = 0;
-      x++;
-    }
-    else if (E == true and F == false and D == false){
-      x--;
-      matriz  [x][y] = 0;
-      x++;
-      y++;
-      matriz  [x][y] = 0;
-      y--;
-    }
-    else if (E == false and F == true and D == true){
-      y--;
-      matriz  [x][y] = 0;
-      y++;
-    }
-    else if (E == true and F == false and D ==true){
-      x--;
-      matriz  [x][y] = 0;
-      x++;
-    }
-    else if (E == true and F == true and D == false){
-      y++;
-      matriz  [x][y] = 0;
-      y--;
-    }
-    
-} 
-
-  else if (ref == 2){
-    if (E == false and F == true and D == false){
-      y++;
-      matriz  [x][y] = 0;
-      y-2;
-      matriz  [x][y] = 0;
-      y++;
-    }
-    else if(E == false and F == false and D == true){
-      y++;
-      matriz  [x][y] = 0;
-      y--;
-      x++;
-      matriz  [x][y] = 0;
-      x--;
-    }
-    else if (E == true and F == false and D == false){
-      x++;
-      matriz  [x][y] = 0;
-      x--;
-      y--;
-      matriz  [x][y] = 0;
-      y++;
-    }
-
-    else if (E == false and F == true and D == true){
-      y++;
-      matriz  [x][y] = 0;
-      y--;
-    }
-    else if (E == true and F == false and D ==true){
-      x++;
-      matriz  [x][y] = 0;
-      x--;
-    }
-    else if (E == true and F == true and D == false){
-      y--;
-      matriz  [x][y] = 0;
-      y++;
+    while (valor2 == 0 and valor3 == 0){
+      valor2 = digitalRead(sensor2);
+      valor3 = digitalRead(sensor3);
+      analogWrite(pwmMotorA, 100);
+      digitalWrite(dirMotorA, LOW);
+      analogWrite(pwmMotorB, 100);
+      digitalWrite(dirMotorB, HIGH);
   }
 
-} //O = 0 N = 1 L=2 S=3
-  else if(ref == 1){
-
-    if (E == false and F == true and D == false){
-      x++;
-      matriz  [x][y] = 0;
-      x-2;
-      matriz  [x][y] = 0;
-      x++;
-    }
-    else if(E == false and F == false and D == true){
-      x--;
-      matriz  [x][y] = 0;
-      x++;
-      y++;
-      matriz  [x][y] = 0;
-      y--;
-    }
-    else if (E == true and F == false and D == false){
-      y++;
-      matriz  [x][y] = 0;
-      y--;
-      x++;
-      matriz  [x][y] = 0;
-      x--;
-    }
-    else if (E == false and F == true and D == true){
-      x--;
-      matriz [x][y] = 0;
-      x++;
-    }
-    else if (E == true and F == false and D ==true){
-      y++;
-      matriz  [x][y] = 0;
-      y--;
-    }
-    else if (E == true and F == true and D == false){
-      x++;
-      matriz  [x][y] = 0;
-      x--;
-    }
-    }
-    if ( ref == 3){
-      
-      if (E == false and F == true and D == false){
-      x++;
-      matriz  [x][y] = 0;
-      x-2;
-      matriz  [x][y] = 0;
-      x++;
-    }
-    else if(E == false and F == false and D == true){
-      x++;
-      matriz  [x][y] = 0;
-      x--;
-      y--;
-      matriz  [x][y] = 0;
-      y++;
-    }
-    else if (E == true and F == false and D == false){
-      y--;
-      matriz  [x][y] = 0;
-      y++;
-      x--;
-      matriz  [x][y] = 0;
-      x++;
-    }
-    else if(E == false and F == true and D == true){
-      x--;
-      matriz [x][y] = 0;
-      x++;
-    }
-    else if  (E == true and F == false and D ==true){
-      y--;
-      matriz  [x][y] = 0;
-      y++;
-    }
-    else if (E == true and F == true and D == false){
-      x--;
-      matriz  [x][y] = 0;
-      x++;
-    }
-
-    }
-
-
-
+    analogWrite(pwmMotorA, motorSpeed);
+    digitalWrite(dirMotorA, HIGH);
+    analogWrite(pwmMotorB, motorSpeed);
+    digitalWrite(dirMotorB, LOW);
+    delay(500);
+  
 }
+
+
 
 
 
   void loop()
 {
   //server.handleClient();    // Faz o Handle
-  
+  //O = 0 N = 1 L=2 S=3
 
   matriz [0][0] = 1;
-  
+  Serial.println("");
   mostrar_matriz();
+    Serial.println("");
   analogWrite(pwmMotorA, 0  );
   digitalWrite(dirMotorA, LOW);
   analogWrite(pwmMotorB,0);
@@ -441,27 +289,27 @@ if(ref == 0 ){
 
 
   valor1 = digitalRead(sensor1);
-  Serial.print(valor1);//Diminuir energia**/
+ // Serial.print(valor1);//Diminuir energia**/
   valor2 = digitalRead(sensor2);
-  Serial.print(valor2); //valor invertido;
+  //Serial.print(valor2); //valor invertido;
   valor3 = digitalRead(sensor3);
-  Serial.print(valor3);
+ // Serial.print(valor3);
   
     
   if(valor1 == 0 and valor2 == 1 and valor3 ==0){
-    paredes(false,true,false);
+   // paredes(false,true,false);
     frente();
     matriz  [x][y] = 1;
 }
 
   else if(valor1 == 0 and valor2 == 0 and valor3 ==1){
-    paredes(false,false,true);
+  //  paredes(false,false,true);
     direita();
     matriz  [x][y] = 1;
     }
    
   else if(valor1 == 1 and valor2 == 0 and valor3 ==0){
-    paredes(true,false,false);
+   // paredes(true,false,false);
     esquerda();
     matriz  [x][y] = 1;
     }
@@ -474,12 +322,12 @@ if(ref == 0 ){
   else if(valor1 == 0 and valor2 == 1 and valor3 ==1){
     escolher = random(1,2);
     if (escolher == 1){
-      paredes(false,true,true);
+   //   paredes(false,true,true);
       frente();
       matriz  [x][y] = 1;
     }
     else if (escolher == 2){
-      paredes(false,true,true);
+     // paredes(false,true,true);
       direita();
       matriz  [x][y] = 1;
     }
@@ -489,12 +337,12 @@ if(ref == 0 ){
   else if(valor1 == 1 and valor2 == 0 and valor3 ==1){
    escolher = random(1,2);
     if (escolher == 1){
-      paredes(true,false,true);
+     // paredes(true,false,true);
       esquerda();
       matriz  [x][y] = 1;
     }
     else if (escolher == 2){
-      paredes(true,false,true);
+     // paredes(true,false,true);
       direita();
       matriz  [x][y] = 1;
     }
@@ -503,17 +351,20 @@ if(ref == 0 ){
   else if(valor1 == 1 and valor2 == 1 and valor3 ==0){
     escolher = random(1,2);
     if (escolher == 1){
-      paredes(true,true,false);
+     // paredes(true,true,false);
       esquerda();
       matriz  [x][y] = 1;
     }
     else if (escolher == 2){
-      paredes(true,true,false);
+     // paredes(true,true,false);
       frente();
       matriz  [x][y] = 1;
     }
   }
-  
+  if (x == 12 and y ==12)
+  {
+    Serial.println("Acabou");
+  }
   /*else if(valor1 == 1 and valor2 == 1 and valor3 ==1)
     Serial.print(sai);
 

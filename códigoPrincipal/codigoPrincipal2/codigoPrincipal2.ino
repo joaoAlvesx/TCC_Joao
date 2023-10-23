@@ -62,7 +62,7 @@ int matriz [tam][tam] =
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
  // system_update_cpu_freq(160);
  
 
@@ -91,6 +91,7 @@ void frente(){
   analogWrite(pwmMotorB, motorSpeed);
   digitalWrite(dirMotorB, LOW);
   delay(1500);
+     Serial.println(" Frente");
 }
 void esquerda(){
 
@@ -108,6 +109,7 @@ void esquerda(){
   analogWrite(pwmMotorB, motorSpeed);
   digitalWrite(dirMotorB, LOW);
   delay(1000);
+     Serial.println("Esquerda ");
 }
 void direita(){
 
@@ -125,326 +127,36 @@ void direita(){
   analogWrite(pwmMotorB, motorSpeed+27);
   digitalWrite(dirMotorB, LOW);
   delay(1000);
+     Serial.println("Direita ");
+  }
+  void retorno(){
+  while (valor2 == 0 ){
+      valor2 = digitalRead(sensor2);
+     
+     
+      analogWrite(pwmMotorA, 100);
+      digitalWrite(dirMotorA, LOW);
+      analogWrite(pwmMotorB, 100);
+      digitalWrite(dirMotorB, HIGH);
   }
 
+    analogWrite(pwmMotorA, motorSpeed);
+    digitalWrite(dirMotorA, LOW);
+    analogWrite(pwmMotorB, motorSpeed);
+    digitalWrite(dirMotorB, HIGH);
+    delay(500);
+
+    analogWrite(pwmMotorA, 0);
+    digitalWrite(dirMotorA, LOW);
+    analogWrite(pwmMotorB, 0);
+    digitalWrite(dirMotorB, LOW);
+    delay(1500);
+  }
   void loop()
 {    
-    analogWrite(pwmMotorA, 0  );
-    digitalWrite(dirMotorA, LOW);
-    analogWrite(pwmMotorB,0);
-    digitalWrite(dirMotorB, LOW);
-    delay(1000);
-    mostrar_matriz();
-    Serial.println(" ");
-    valor1 = digitalRead(sensor1);
-    Serial.print(valor1);//Diminuir energia**/
-    valor2 = digitalRead(sensor2);
-    Serial.print(valor2); //valor invertido;
-    valor3 = digitalRead(sensor3);
-    Serial.print(valor3);
-    matriz [0][0] = 1;
-    //O = 0 N = 1 L=2 S=3
-    if(valor1 == 0 and valor2 == 1 and valor3 ==0){
-        frente();
-        if(ref == 0){
-            x--;
-            matriz [x][y] = 1;
-            x--;
-        }
-        else if(ref == 1){
-            y++;
-            matriz [x][y] = 1;
-            y++;
-        }
-        else if(ref == 2){
-            x++;
-            matriz [x][y] = 1;
-            x++;
-        }
-        else if(ref == 3){
-            y--;
-            matriz [x][y] = 1;
-            y--;
-        }
-        matriz [x][y] = 1;
-    }
+  valor2 = digitalRead(sensor2);
 
-    else if(valor1 == 0 and valor2 == 0 and valor3 ==1){
-        direita();
-        //Definindo valor da ref
-            if(ref == 0)
-            ref == 1;
-            else if(ref == 1)
-            ref == 2;
-            else if(ref == 2)
-            ref == 3;
-            else if(ref == 3)
-            ref == 0;
-        //Definincdo onde colocar o valor 1
-            if(ref == 0){
-                x--;
-                matriz [x][y] = 1;
-                x--;
-            }
-            else if(ref == 1){
-                y++;
-                matriz [x][y] = 1;
-                y++;
-            }
-            else if(ref == 2){
-                x++;
-                matriz [x][y] = 1;
-                x++;
-            }
-            else if(ref == 3){
-                y--;
-                matriz [x][y] = 1;
-                y--;
-            }
-
-
-        matriz  [x][y] = 1;
-    }
-
-    else if(valor1 == 1 and valor2 == 0 and valor3 ==0){
-        esquerda();
-        //Definindo valor da ref
-            if(ref == 0)
-            ref == 3;
-            else if(ref == 3)
-            ref == 2;
-            else if(ref == 2)
-            ref == 1;
-            else if(ref == 1)
-            ref == 0;
-        //Definincdo onde colocar o valor 1
-            if(ref == 0){
-            x--;
-            matriz [x][y] = 1;
-            x--;
-            }
-            else if(ref == 1){
-            y++;
-            matriz [x][y] = 1;
-            y++;
-            }
-            else if(ref == 2){
-            x++;
-            matriz [x][y] = 1;
-            x++;
-            }
-            else if(ref == 3){
-            y--;
-            matriz [x][y] = 1;
-            y--;
-            }
-        matriz  [x][y] = 1;
-    }
-
-    else if(valor1 == 0 and valor2 == 0 and valor3 ==0){
-       Serial.println("Nenhum lugar");
-    }
-
-
-    else if(valor1 == 0 and valor2 == 1 and valor3 ==1){
-        escolher = random(1,2);
-        if (escolher == 1){
-            frente();
-                if(ref == 0){
-                x--;
-                matriz [x][y] = 1;
-                x--;
-            }
-            else if(ref == 1){
-                y++;
-                matriz [x][y] = 1;
-                y++;
-            }
-            else if(ref == 2){
-                x++;
-                matriz [x][y] = 1;
-                x++;
-            }
-            else if(ref == 3){
-                y--;
-                matriz [x][y] = 1;
-                y--;
-            }
-        matriz  [x][y] = 1;
-        }
-        else if (escolher == 2){
-            direita();
-        //Definindo valor da ref
-            if(ref == 0)
-            ref == 1;
-            else if(ref == 1)
-            ref == 2;
-            else if(ref == 2)
-            ref == 3;
-            else if(ref == 3)
-            ref == 0;
-        //Definincdo onde colocar o valor 1
-            if(ref == 0){
-                x--;
-                matriz [x][y] = 1;
-                x--;
-            }
-            else if(ref == 1){
-                y++;
-                matriz [x][y] = 1;
-                y++;
-            }
-            else if(ref == 2){
-                x++;
-                matriz [x][y] = 1;
-                x++;
-            }
-            else if(ref == 3){
-                y--;
-                matriz [x][y] = 1;
-                y--;
-            }
-
-        matriz  [x][y] = 1;
-    }
-
-
-    }
-    else if(valor1 == 1 and valor2 == 0 and valor3 ==1){
-        escolher = random(1,2);
-        if (escolher == 1){
-            esquerda();
-            //Definindo valor da ref
-            if(ref == 0)
-            ref == 3;
-            else if(ref == 3)
-            ref == 2;
-            else if(ref == 2)
-            ref == 1;
-            else if(ref == 1)
-            ref == 0;
-        //Definincdo onde colocar o valor 1
-            if(ref == 0){
-            x--;
-            matriz [x][y] = 1;
-            x--;
-            }
-            else if(ref == 1){
-            y++;
-            matriz [x][y] = 1;
-            y++;
-            }
-            else if(ref == 2){
-            x++;
-            matriz [x][y] = 1;
-            x++;
-            }
-            else if(ref == 3){
-            y--;
-            matriz [x][y] = 1;
-            y--;
-            }
-        matriz  [x][y] = 1;
-        }
-        else if (escolher == 2){
-            direita();
-        //Definindo valor da ref
-            if(ref == 0)
-            ref == 1;
-            else if(ref == 1)
-            ref == 2;
-            else if(ref == 2)
-            ref == 3;
-            else if(ref == 3)
-            ref == 0;
-        //Definincdo onde colocar o valor 1
-            if(ref == 0){
-                x--;
-                matriz [x][y] = 1;
-                x--;
-            }
-            else if(ref == 1){
-                y++;
-                matriz [x][y] = 1;
-                y++;
-            }
-            else if(ref == 2){
-                x++;
-                matriz [x][y] = 1;
-                x++;
-            }
-            else if(ref == 3){
-                y--;
-                matriz [x][y] = 1;
-                y--;
-            }
-
-        matriz  [x][y] = 1;
-        }
-
-    }
-    else if(valor1 == 1 and valor2 == 1 and valor3 ==0){
-        escolher = random(1,2);
-        if (escolher == 1){
-            esquerda();
-            //Definindo valor da ref
-            if(ref == 0)
-            ref == 3;
-            else if(ref == 3)
-            ref == 2;
-            else if(ref == 2)
-            ref == 1;
-            else if(ref == 1)
-            ref == 0;
-        //Definincdo onde colocar o valor 1
-            if(ref == 0){
-            x--;
-            matriz [x][y] = 1;
-            x--;
-            }
-            else if(ref == 1){
-            y++;
-            matriz [x][y] = 1;
-            y++;
-            }
-            else if(ref == 2){
-            x++;
-            matriz [x][y] = 1;
-            x++;
-            }
-            else if(ref == 3){
-            y--;
-            matriz [x][y] = 1;
-            y--;
-            }
-        matriz  [x][y] = 1;
-        }
-        else if (escolher == 2){
-            frente();
-                if(ref == 0){
-                x--;
-                matriz [x][y] = 1;
-                x--;
-            }
-            else if(ref == 1){
-                y++;
-                matriz [x][y] = 1;
-                y++;
-            }
-            else if(ref == 2){
-                x++;
-                matriz [x][y] = 1;
-                x++;
-            }
-            else if(ref == 3){
-                y--;
-                matriz [x][y] = 1;
-                y--;
-            }
-            matriz  [x][y] = 1;
-        }
-    }
-
+ retorno();  
+  Serial.println(valor2);
  
 }
- 

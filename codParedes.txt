@@ -1,0 +1,174 @@
+void paredes(bool E, bool F, bool D){
+  //O = 0 N = 1 L=2 S=3
+  //false = parede
+if(ref == 0 ){
+  if (E == false and F == true and D == false){
+      y--;
+      matriz  [x][y] = 0;
+      y+2;
+      matriz  [x][y] = 0;
+      y--;
+    }
+    else if(E == false and F == false and D == true){
+      y--;
+      matriz  [x][y] = 0;
+      y++;
+      x--;
+      matriz  [x][y] = 0;
+      x++;
+    }
+    else if (E == true and F == false and D == false){
+      x--;
+      matriz  [x][y] = 0;
+      x++;
+      y++;
+      matriz  [x][y] = 0;
+      y--;
+    }
+    else if (E == false and F == true and D == true){
+      y--;
+      matriz  [x][y] = 0;
+      y++;
+    }
+    else if (E == true and F == false and D ==true){
+      x--;
+      matriz  [x][y] = 0;
+      x++;
+    }
+    else if (E == true and F == true and D == false){
+      y++;
+      matriz  [x][y] = 0;
+      y--;
+    }
+    
+} 
+
+  else if (ref == 2){
+    if (E == false and F == true and D == false){
+      y++;
+      matriz  [x][y] = 0;
+      y-2;
+      matriz  [x][y] = 0;
+      y++;
+    }
+    else if(E == false and F == false and D == true){
+      y++;
+      matriz  [x][y] = 0;
+      y--;
+      x++;
+      matriz  [x][y] = 0;
+      x--;
+    }
+    else if (E == true and F == false and D == false){
+      x++;
+      matriz  [x][y] = 0;
+      x--;
+      y--;
+      matriz  [x][y] = 0;
+      y++;
+    }
+
+    else if (E == false and F == true and D == true){
+      y++;
+      matriz  [x][y] = 0;
+      y--;
+    }
+    else if (E == true and F == false and D ==true){
+      x++;
+      matriz  [x][y] = 0;
+      x--;
+    }
+    else if (E == true and F == true and D == false){
+      y--;
+      matriz  [x][y] = 0;
+      y++;
+  }
+
+} //O = 0 N = 1 L=2 S=3
+  else if(ref == 1){
+
+    if (E == false and F == true and D == false){
+      x++;
+      matriz  [x][y] = 0;
+      x-2;
+      matriz  [x][y] = 0;
+      x++;
+    }
+    else if(E == false and F == false and D == true){
+      x--;
+      matriz  [x][y] = 0;
+      x++;
+      y++;
+      matriz  [x][y] = 0;
+      y--;
+    }
+    else if (E == true and F == false and D == false){
+      y++;
+      matriz  [x][y] = 0;
+      y--;
+      x++;
+      matriz  [x][y] = 0;
+      x--;
+    }
+    else if (E == false and F == true and D == true){
+      x--;
+      matriz [x][y] = 0;
+      x++;
+    }
+    else if (E == true and F == false and D ==true){
+      y++;
+      matriz  [x][y] = 0;
+      y--;
+    }
+    else if (E == true and F == true and D == false){
+      x++;
+      matriz  [x][y] = 0;
+      x--;
+    }
+    }
+    if ( ref == 3){
+      
+      if (E == false and F == true and D == false){
+      x++;
+      matriz  [x][y] = 0;
+      x-2;
+      matriz  [x][y] = 0;
+      x++;
+    }
+    else if(E == false and F == false and D == true){
+      x++;
+      matriz  [x][y] = 0;
+      x--;
+      y--;
+      matriz  [x][y] = 0;
+      y++;
+    }
+    else if (E == true and F == false and D == false){
+      y--;
+      matriz  [x][y] = 0;
+      y++;
+      x--;
+      matriz  [x][y] = 0;
+      x++;
+    }
+    else if(E == false and F == true and D == true){
+      x--;
+      matriz [x][y] = 0;
+      x++;
+    }
+    else if  (E == true and F == false and D ==true){
+      y--;
+      matriz  [x][y] = 0;
+      y++;
+    }
+    else if (E == true and F == true and D == false){
+      x--;
+      matriz  [x][y] = 0;
+      x++;
+    }
+
+    }
+
+
+
+}
