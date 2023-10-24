@@ -14,7 +14,7 @@
 
 
 //Wifi 
-/*
+
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
@@ -23,7 +23,7 @@ const char* ssid = "IFMaker Adm";  // SSID Wifi
 const char* password = "@IFM4k3r";  // Senha Wifi
 ESP8266WebServer server(80);
 bool LEDstatus = LOW;
-*/int test = 0;
+int test = 0;
 
 //sensores
 int sensor1 = D0;//Esquerda azul/
@@ -33,6 +33,9 @@ int sensor3 = D7;//Direita branco
 int valor1;
 int valor2;
 int valor3;
+int htsensor1;
+int htsensor2;
+int htsensor3;
 
 
 //MOTORES
@@ -99,7 +102,7 @@ void setup()
   pinMode(sensor1, INPUT);
   pinMode(sensor2, INPUT);
   pinMode(sensor3, INPUT);
-/*
+
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   Serial.println("");
@@ -121,7 +124,7 @@ void setup()
   server.onNotFound(handle_NotFound);
   server.begin();
   Serial.println("Servidor HTTP iniciado!");
-*/
+
 }
 
 void pos(){
@@ -289,11 +292,14 @@ void retorno(){
 
 
   valor1 = digitalRead(sensor1);
- // Serial.print(valor1);//Diminuir energia**/
+  htsensor1 = digitalRead(sensor1);
+ Serial.println(valor1);//Diminuir energia**/
   valor2 = digitalRead(sensor2);
-  //Serial.print(valor2); //valor invertido;
+    htsensor2 = digitalRead(sensor2);
+  Serial.print(valor2); //valor invertido;
   valor3 = digitalRead(sensor3);
- // Serial.print(valor3);
+    htsensor3 = digitalRead(sensor3);
+ Serial.print(valor3);
   
     
   if(valor1 == 0 and valor2 == 1 and valor3 ==0){
@@ -373,7 +379,7 @@ void retorno(){
 
 
 
-}/*
+}
  void handle_OnConnect() {
   LEDstatus = LOW;
   server.send(200, "text/html", SendHTML(false));
@@ -390,7 +396,7 @@ void handle_ledoff() {
 }
 
 void handle_NotFound() {
-  server.send(404, "text/plain", "Not found");
+  server.send(404, "text/plain", "TA DANDO ERRO MENO");
 }
 
 
@@ -401,8 +407,8 @@ void handle_NotFound() {
   ptr += "<title>Codigo TCC</title>\n";
   ptr += "</head>\n";
   ptr += "<body>\n";
-  ptr += test;
-  /*ptr += "<form method=\"get\">\n";
+ 
+  ptr += "<form method=\"get\">\n";
   if (led)
     ptr += "<input type=\"button\" value=\"LED OFF\" onclick=\"window.location.href='/ledoff'\">\n";
   else
@@ -410,5 +416,5 @@ void handle_NotFound() {
   ptr += "</form>\n";
   ptr += "</body>\n";
   ptr += "</html>\n";
-  return ptr;*/
+  return ptr;}
   
