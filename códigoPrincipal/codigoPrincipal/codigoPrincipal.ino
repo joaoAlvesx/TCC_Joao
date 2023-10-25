@@ -16,12 +16,14 @@
 //Wifi 
 
 #include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
+
 
 // Configração do WiFi
-const char* ssid = "IFMaker Adm";  // SSID Wifi
-const char* password = "@IFM4k3r";  // Senha Wifi
-ESP8266WebServer server(80);
+const char* ssid = "IFMaker Adm"; //VARIÁVEL QUE ARMAZENA O NOME DA REDE SEM FIO EM QUE VAI CONECTAR
+const char* password = "@IFM4k3r"; //VARIÁVEL QUE ARMAZENA A SENHA DA REDE SEM FIO EM QUE VAI CONECTAR
+ 
+WiFiServer server(80);
+
 bool LEDstatus = LOW;
 int test = 0;
 
@@ -44,7 +46,7 @@ const int pwmMotorB = D2;
 const int dirMotorA = D3;
 const int dirMotorB = D4;
 
-int motorSpeed = 100;
+int motorSpeed = 1023;
 int motorSpeedNegativo = -100;
 
 //Matriz
@@ -103,28 +105,27 @@ void setup()
   pinMode(sensor2, INPUT);
   pinMode(sensor3, INPUT);
 
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-  Serial.println("");
+  Serial.println(""); //PULA UMA LINHA NA JANELA SERIAL
+  Serial.println(""); //PULA UMA LINHA NA JANELA SERIAL
+  Serial.print("Conectando a "); //ESCREVE O TEXTO NA SERIAL
+  Serial.print(ssid); //ESCREVE O NOME DA REDE NA SERIAL
   
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+  WiFi.begin(ssid, password); //PASSA OS PARÂMETROS PARA A FUNÇÃO QUE VAI FAZER A CONEXÃO COM A REDE SEM FIO
+  
+  while (WiFi.status() != WL_CONNECTED) { //ENQUANTO STATUS FOR DIFERENTE DE CONECTADO
+  delay(500); //INTERVALO DE 500 MILISEGUNDOS
+  Serial.print("."); //ESCREVE O CARACTER NA SERIAL
   }
-  Serial.println("");
-  Serial.print("Rede WiFi: ");
-  Serial.println(ssid);
-  Serial.print("Endereço IP: ");
-  Serial.println(WiFi.localIP());
-  delay(100);
-
-  server.on("/", handle_OnConnect);
-  server.on("/ledon", handle_ledon);
-  server.on("/ledoff", handle_ledoff);
-  server.onNotFound(handle_NotFound);
-  server.begin();
-  Serial.println("Servidor HTTP iniciado!");
-
+  Serial.println(""); //PULA UMA LINHA NA JANELA SERIAL
+  Serial.print("Conectado a rede sem fio "); //ESCREVE O TEXTO NA SERIAL
+  Serial.println(ssid); //ESCREVE O NOME DA REDE NA SERIAL
+  server.begin(); //INICIA O SERVIDOR PARA RECEBER DADOS NA PORTA DEFINIDA EM "WiFiServer server(porta);"
+  Serial.println("Servidor iniciado"); //ESCREVE O TEXTO NA SERIAL
+  
+  Serial.print("IP para se conectar ao NodeMCU: "); //ESCREVE O TEXTO NA SERIAL
+  Serial.print("http://"); //ESCREVE O TEXTO NA SERIAL
+  Serial.println(WiFi.localIP()); //ESCREVE NA SERIAL O IP RECEBIDO DENTRO DA REDE SEM FIO (O IP NESSA PRÁTICA É RECEBIDO DE FORMA AUTOMÁTICA)
+  
 }
 
 void pos(){
@@ -153,11 +154,11 @@ void pos(){
   Serial.print(ref);
 }
 void frente(){
-  
+   Serial.println("Frente");
   analogWrite(pwmMotorA, motorSpeed);
   digitalWrite(dirMotorA, LOW);
   analogWrite(pwmMotorB, motorSpeed);
-  digitalWrite(dirMotorB, LOW);
+  digitalWrite(dirMotorB, HIGH);
   delay(2500);
 
   if(ref == 0){
@@ -180,19 +181,21 @@ void frente(){
     matriz [x][y] = 1;
     y++;
   }
- Serial.println("frente" );
+ 
    Serial.print("ref =");
   Serial.print(ref);
+    test = 1;
 
 }
 
 void direita(){
 //O = 0 N = 1 L=2 S=3
+ Serial.println("Direita");
  while (valor2 == 0 and valor1 == 0){
     valor2 = digitalRead(sensor2);
     valor1 = digitalRead(sensor1);
     analogWrite(pwmMotorA, motorSpeed);
-    digitalWrite(dirMotorA, HIGH);
+    digitalWrite(dirMotorA, LOW);
     analogWrite(pwmMotorB, motorSpeed);
     digitalWrite(dirMotorB, LOW);
  }
@@ -200,7 +203,7 @@ void direita(){
   analogWrite(pwmMotorA, motorSpeed  );
   digitalWrite(dirMotorA, LOW);
   analogWrite(pwmMotorB, motorSpeed+27);
-  digitalWrite(dirMotorB, LOW);
+  digitalWrite(dirMotorB, HIGH);
   delay(1000);
 
   if(ref == 0)
@@ -213,20 +216,21 @@ void direita(){
     ref = 0;
 
   pos();
+  test = 2;
  
-  Serial.println("Direita");
+
 }
 
   
 
 void esquerda(){
-  
+   Serial.println("Esquerda");
 
   while (valor2 == 0 and valor3 == 0){
       valor2 = digitalRead(sensor2);
       valor3 = digitalRead(sensor3);
       analogWrite(pwmMotorA, 100);
-      digitalWrite(dirMotorA, LOW);
+      digitalWrite(dirMotorA, HIGH);
       analogWrite(pwmMotorB, 100);
       digitalWrite(dirMotorB, HIGH);
   }
@@ -234,7 +238,7 @@ void esquerda(){
   analogWrite(pwmMotorA, motorSpeed +27 );
   digitalWrite(dirMotorA, LOW);
   analogWrite(pwmMotorB, motorSpeed);
-  digitalWrite(dirMotorB, LOW);
+  digitalWrite(dirMotorB, HIGH);
   delay(1000);
 
   if(ref == 0)
@@ -247,17 +251,17 @@ void esquerda(){
     ref = 0;
 
   pos();
-
-   Serial.println("Esquerda");
+  test = 3;
+  
 }
 
 void retorno(){
     while (valor2 == 0 and valor3 == 0){
       valor2 = digitalRead(sensor2);
       valor3 = digitalRead(sensor3);
-      analogWrite(pwmMotorA, 100);
+      analogWrite(pwmMotorA, motorSpeed);
       digitalWrite(dirMotorA, LOW);
-      analogWrite(pwmMotorB, 100);
+      analogWrite(pwmMotorB, motorSpeed);
       digitalWrite(dirMotorB, HIGH);
   }
 
@@ -266,7 +270,7 @@ void retorno(){
     analogWrite(pwmMotorB, motorSpeed);
     digitalWrite(dirMotorB, LOW);
     delay(500);
-  
+  test = 4;
 }
 
 
@@ -341,17 +345,11 @@ void retorno(){
    
     }
   else if(valor1 == 1 and valor2 == 0 and valor3 ==1){
-   escolher = random(1,2);
-    if (escolher == 1){
-     // paredes(true,false,true);
-      esquerda();
-      matriz  [x][y] = 1;
-    }
-    else if (escolher == 2){
-     // paredes(true,false,true);
+    
+   
       direita();
       matriz  [x][y] = 1;
-    }
+    
   
     }
   else if(valor1 == 1 and valor2 == 1 and valor3 ==0){
@@ -377,44 +375,29 @@ void retorno(){
   };*/
  
 
-
-
+WiFiClient client = server.available(); //VERIFICA SE ALGUM CLIENTE ESTÁ CONECTADO NO SERVIDOR
+if (!client) { //SE NÃO EXISTIR CLIENTE CONECTADO, FAZ
+return; //REEXECUTA O PROCESSO ATÉ QUE ALGUM CLIENTE SE CONECTE AO SERVIDOR
 }
- void handle_OnConnect() {
-  LEDstatus = LOW;
-  server.send(200, "text/html", SendHTML(false));
+Serial.println("Novo cliente se conectou!"); //ESCREVE O TEXTO NA SERIAL
+while(!client.available()){ //ENQUANTO CLIENTE ESTIVER CONECTADO
+delay(1); //INTERVALO DE 1 MILISEGUNDO
 }
-
-void handle_ledon() {
-  LEDstatus = HIGH;
-  server.send(200, "text/html", SendHTML(true));
-}
-
-void handle_ledoff() {
-  LEDstatus = LOW;
-  server.send(200, "text/html", SendHTML(false));
-}
-
-void handle_NotFound() {
-  server.send(404, "text/plain", "TA DANDO ERRO MENO");
-}
-
-
- String SendHTML(uint8_t led) {
-  String ptr = "<!DOCTYPE html>\n";
-  ptr += "<html>\n";
-  ptr += "<head>\n";
-  ptr += "<title>Codigo TCC</title>\n";
-  ptr += "</head>\n";
-  ptr += "<body>\n";
+String request = client.readStringUntil('\r'); //FAZ A LEITURA DA PRIMEIRA LINHA DA REQUISIÇÃO
+Serial.println(request); //ESCREVE A REQUISIÇÃO NA SERIAL
+client.flush(); //AGUARDA ATÉ QUE TODOS OS DADOS DE SAÍDA SEJAM ENVIADOS AO CLIENTE
  
-  ptr += "<form method=\"get\">\n";
-  if (led)
-    ptr += "<input type=\"button\" value=\"LED OFF\" onclick=\"window.location.href='/ledoff'\">\n";
-  else
-    ptr += "<input type=\"button\" value=\"LED ON\" onclick=\"window.location.href='/ledon'\">\n";
-  ptr += "</form>\n";
-  ptr += "</body>\n";
-  ptr += "</html>\n";
-  return ptr;}
-  
+client.println("HTTP/1.1 200 OK"); //ESCREVE PARA O CLIENTE A VERSÃO DO HTTP
+client.println("Content-Type: text/html"); //ESCREVE PARA O CLIENTE O TIPO DE CONTEÚDO(texto/html)
+client.println("");
+client.println("<!DOCTYPE HTML>"); //INFORMA AO NAVEGADOR A ESPECIFICAÇÃO DO HTML
+client.println("<html>"); //ABRE A TAG "html"
+client.println("<h1><center>test</center></h1>"); //ESCREVE "Ola cliente!" NA PÁGINA
+client.println(test); //ESCREVE "Ola cliente!" NA PÁGINA
+client.println("<center><font size='5'>se o chefe leu o compass eh meu</center>"); //ESCREVE "Seja bem vindo!" NA PÁGINA
+client.println("</html>"); //FECHA A TAG "html"
+delay(1); //INTERVALO DE 1 MILISEGUNDO
+Serial.println("Cliente desconectado"); //ESCREVE O TEXTO NA SERIAL
+Serial.println(""); //PULA UMA LINHA NA JANELA SERIAL
+
+}
