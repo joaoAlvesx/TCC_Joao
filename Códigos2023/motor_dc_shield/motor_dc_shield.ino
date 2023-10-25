@@ -1,20 +1,32 @@
-int in1 = 5;
-int in2 = 0 ;
-int i;
+const int pwmMotorA = D1;
+const int pwmMotorB = D2;
+const int dirMotorA = D3;
+const int dirMotorB = D4;
+
+int motorVelocidade = 500;
+
 void setup()
 {
-  Serial.begin(9600);
-  
-  pinMode(in1, OUTPUT); 
-  pinMode(in2, OUTPUT); 
+  pinMode(pwmMotorA , OUTPUT);
+  pinMode(pwmMotorB, OUTPUT);
+  pinMode(dirMotorA, OUTPUT);
+  pinMode(dirMotorB, OUTPUT);
 }
   void loop()
 {
-  for (i = 0; i<1023; i++ ){
-    analogWrite(in1, i);
-    analogWrite(in2, 0);
-    delay(100);
-  }
+  analogWrite(pwmMotorA, motorVelocidade);
+  digitalWrite(dirMotorA, LOW);
+  analogWrite(pwmMotorB, motorVelocidade);
+  digitalWrite(dirMotorB, LOW);
+  delay(2500);
 
-
+  analogWrite(pwmMotorA, motorVelocidade);
+  digitalWrite(dirMotorA, HIGH);
+  analogWrite(pwmMotorB, motorVelocidade);
+  digitalWrite(dirMotorB, HIGH);
+  delay(2500);
 }
+
+
+
+
