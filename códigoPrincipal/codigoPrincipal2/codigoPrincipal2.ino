@@ -154,9 +154,15 @@ void direita(){
   }
   void loop()
 {    
-  valor2 = digitalRead(sensor2);
-
- retorno();  
-  Serial.println(valor2);
+   analogWrite(pwmMotorA, motorSpeed);
+  digitalWrite(dirMotorA, LOW);
+  analogWrite(pwmMotorB, motorSpeed);
+  digitalWrite(dirMotorB, LOW);
+  delay(3300);
+  analogWrite(pwmMotorA, 0);
+  digitalWrite(dirMotorA, LOW);
+  analogWrite(pwmMotorB, 0);
+  digitalWrite(dirMotorB, LOW);
+  delay(3000);
  
 }

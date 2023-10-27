@@ -1,3 +1,4 @@
+
 #define D0    16
 #define D1    5
 #define D2    4
@@ -46,13 +47,13 @@ const int pwmMotorB = D2;
 const int dirMotorA = D3;
 const int dirMotorB = D4;
 
-int motorSpeed = 1023;
+int motorSpeed = 100;
 int motorSpeedNegativo = -100;
 
 //Matriz
 int x = 0;
 int y = 0;
-#define tam 12
+#define tam 13
 //variaveis auxiliares
 bool saida = false;
 int escolher = 0;
@@ -63,6 +64,7 @@ int ref = 3;
 int matriz [tam][tam] =
 {
 
+{0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0},
@@ -157,9 +159,9 @@ void frente(){
    Serial.println("Frente");
   analogWrite(pwmMotorA, motorSpeed);
   digitalWrite(dirMotorA, LOW);
-  analogWrite(pwmMotorB, motorSpeed);
+  analogWrite(pwmMotorB, motorSpeed+27);
   digitalWrite(dirMotorB, HIGH);
-  delay(2500);
+  delay(2100);
 
   if(ref == 0){
     x--;
@@ -191,20 +193,20 @@ void frente(){
 void direita(){
 //O = 0 N = 1 L=2 S=3
  Serial.println("Direita");
- while (valor2 == 0 and valor1 == 0){
-    valor2 = digitalRead(sensor2);
-    valor1 = digitalRead(sensor1);
+ 
+   
     analogWrite(pwmMotorA, motorSpeed);
     digitalWrite(dirMotorA, LOW);
     analogWrite(pwmMotorB, motorSpeed);
     digitalWrite(dirMotorB, LOW);
- }
+
+    delay(1850);
 
   analogWrite(pwmMotorA, motorSpeed  );
   digitalWrite(dirMotorA, LOW);
-  analogWrite(pwmMotorB, motorSpeed+27);
+  analogWrite(pwmMotorB, motorSpeed);
   digitalWrite(dirMotorB, HIGH);
-  delay(1000);
+  delay(2100);
 
   if(ref == 0)
     ref = 1;
@@ -226,20 +228,18 @@ void direita(){
 void esquerda(){
    Serial.println("Esquerda");
 
-  while (valor2 == 0 and valor3 == 0){
-      valor2 = digitalRead(sensor2);
-      valor3 = digitalRead(sensor3);
-      analogWrite(pwmMotorA, 100);
-      digitalWrite(dirMotorA, HIGH);
-      analogWrite(pwmMotorB, 100);
-      digitalWrite(dirMotorB, HIGH);
-  }
+ 
+    analogWrite(pwmMotorA, motorSpeed);
+    digitalWrite(dirMotorA, HIGH);
+    analogWrite(pwmMotorB, motorSpeed);
+    digitalWrite(dirMotorB, HIGH);
+    delay(1600);
 
-  analogWrite(pwmMotorA, motorSpeed +27 );
+  analogWrite(pwmMotorA, motorSpeed );
   digitalWrite(dirMotorA, LOW);
-  analogWrite(pwmMotorB, motorSpeed);
+  analogWrite(pwmMotorB, motorSpeed +27);
   digitalWrite(dirMotorB, HIGH);
-  delay(1000);
+  delay(2100);
 
   if(ref == 0)
     ref = 3;
@@ -256,20 +256,29 @@ void esquerda(){
 }
 
 void retorno(){
-    while (valor2 == 0 and valor3 == 0){
-      valor2 = digitalRead(sensor2);
-      valor3 = digitalRead(sensor3);
-      analogWrite(pwmMotorA, motorSpeed);
-      digitalWrite(dirMotorA, LOW);
-      analogWrite(pwmMotorB, motorSpeed);
-      digitalWrite(dirMotorB, HIGH);
-  }
+    
+   analogWrite(pwmMotorA, motorSpeed);
+  digitalWrite(dirMotorA, LOW);
+  analogWrite(pwmMotorB, motorSpeed);
+  digitalWrite(dirMotorB, LOW);
+  delay(3300);
 
-    analogWrite(pwmMotorA, motorSpeed);
-    digitalWrite(dirMotorA, HIGH);
-    analogWrite(pwmMotorB, motorSpeed);
-    digitalWrite(dirMotorB, LOW);
-    delay(500);
+  analogWrite(pwmMotorA, motorSpeed);
+  digitalWrite(dirMotorA, HIGH);
+  analogWrite(pwmMotorB, motorSpeed);
+  digitalWrite(dirMotorB, LOW);
+  delay(2100);
+//O = 0 N = 1 L=2 S=3
+  if(ref == 0)
+    ref = 2;
+  else if(ref == 2)
+    ref = 0;
+  else if(ref == 1)
+    ref = 3;
+  else if(ref == 3)
+    ref = 1;
+
+
   test = 4;
 }
 
@@ -279,9 +288,43 @@ void retorno(){
 
   void loop()
 {
-  //server.handleClient();    // Faz o Handle
-  //O = 0 N = 1 L=2 S=3
 
+
+  if (y > 12){
+    while(true){
+      analogWrite(pwmMotorA, 0  );
+      digitalWrite(dirMotorA, LOW);
+      analogWrite(pwmMotorB,0);
+      digitalWrite(dirMotorB, LOW);
+    }
+  }
+  if (x > 12){
+    while(true){
+      analogWrite(pwmMotorA, 0  );
+      digitalWrite(dirMotorA, LOW);
+      analogWrite(pwmMotorB,0);
+      digitalWrite(dirMotorB, LOW);
+    }
+  }
+
+  if (y < 0){
+    while(true){
+      analogWrite(pwmMotorA, 0  );
+      digitalWrite(dirMotorA, LOW);
+      analogWrite(pwmMotorB,0);
+      digitalWrite(dirMotorB, LOW);
+    }
+  }
+  if (x < 0){
+    while(true){
+      analogWrite(pwmMotorA, 0  );
+      digitalWrite(dirMotorA, LOW);
+      analogWrite(pwmMotorB,0);
+      digitalWrite(dirMotorB, LOW);
+    }
+  }
+  //O = 0 N = 1 L=2 S=3
+  delay(500);
   matriz [0][0] = 1;
   Serial.println("");
   mostrar_matriz();
@@ -325,22 +368,15 @@ void retorno(){
     }
 
   else if(valor1 == 0 and valor2 == 0 and valor3 ==0){
-    Serial.println("Nenhum canto");
+    retorno();
     }
 
 
   else if(valor1 == 0 and valor2 == 1 and valor3 ==1){
-    escolher = random(1,2);
-    if (escolher == 1){
-   //   paredes(false,true,true);
-      frente();
-      matriz  [x][y] = 1;
-    }
-    else if (escolher == 2){
-     // paredes(false,true,true);
+  
       direita();
       matriz  [x][y] = 1;
-    }
+    
   
    
     }
@@ -353,7 +389,7 @@ void retorno(){
   
     }
   else if(valor1 == 1 and valor2 == 1 and valor3 ==0){
-    escolher = random(1,2);
+    escolher = random(0,2);
     if (escolher == 1){
      // paredes(true,true,false);
       esquerda();
@@ -364,11 +400,18 @@ void retorno(){
       frente();
       matriz  [x][y] = 1;
     }
-  }
-  if (x == 12 and y ==12)
-  {
-    Serial.println("Acabou");
-  }
+  } 
+   else if(valor1 == 1 and valor2 == 1 and valor3 ==1){
+      delay(1000);
+    }
+
+    Serial.println("");
+    Serial.print("X:");
+    Serial.println(x);
+    Serial.print("Y:");
+    Serial.print(y);
+    Serial.println("");
+  
   /*else if(valor1 == 1 and valor2 == 1 and valor3 ==1)
     Serial.print(sai);
 
@@ -380,9 +423,7 @@ if (!client) { //SE NÃO EXISTIR CLIENTE CONECTADO, FAZ
 return; //REEXECUTA O PROCESSO ATÉ QUE ALGUM CLIENTE SE CONECTE AO SERVIDOR
 }
 Serial.println("Novo cliente se conectou!"); //ESCREVE O TEXTO NA SERIAL
-while(!client.available()){ //ENQUANTO CLIENTE ESTIVER CONECTADO
-delay(1); //INTERVALO DE 1 MILISEGUNDO
-}
+
 String request = client.readStringUntil('\r'); //FAZ A LEITURA DA PRIMEIRA LINHA DA REQUISIÇÃO
 Serial.println(request); //ESCREVE A REQUISIÇÃO NA SERIAL
 client.flush(); //AGUARDA ATÉ QUE TODOS OS DADOS DE SAÍDA SEJAM ENVIADOS AO CLIENTE
@@ -392,9 +433,60 @@ client.println("Content-Type: text/html"); //ESCREVE PARA O CLIENTE O TIPO DE CO
 client.println("");
 client.println("<!DOCTYPE HTML>"); //INFORMA AO NAVEGADOR A ESPECIFICAÇÃO DO HTML
 client.println("<html>"); //ABRE A TAG "html"
-client.println("<h1><center>test</center></h1>"); //ESCREVE "Ola cliente!" NA PÁGINA
-client.println(test); //ESCREVE "Ola cliente!" NA PÁGINA
-client.println("<center><font size='5'>se o chefe leu o compass eh meu</center>"); //ESCREVE "Seja bem vindo!" NA PÁGINA
+
+client.println("Funcao:"); 
+client.print(test); 
+client.println("<br>"); 
+client.println("sensor1:"); 
+client.print(valor1); 
+client.println("<br>"); 
+client.println("sensor2:"); 
+client.print(valor2); 
+client.println("<br>"); 
+client.println("sensor3:"); 
+client.print(valor3); 
+client.println("<br>"); 
+client.println("referencia:"); 
+//O = 0 N = 1 L=2 S=3
+if(ref == 0 ){
+  client.print("Oeste"); 
+}
+else if(ref == 1 ){
+  client.print("Norte"); 
+}
+else if(ref == 2 ){
+  client.print("Leste"); 
+}
+else if(ref == 3 ){
+  client.print("Sul"); 
+}
+client.println("<br>"); 
+client.println("<br>"); 
+ client.print("Matriz"); 
+client.println("<br>"); 
+
+  for (int y = 0; y<12;y++){
+    for (int x = 0; x<12;x++){
+     client.print(matriz[x][y]);
+    }
+    client.println("<br>"); 
+  }
+
+
+  client.println("<br>");
+    client.println("X:");
+    client.print(x);
+    client.println("Y:");
+    client.println(y);
+    client.println("<br>");
+    if (x == 12 and y ==12)
+  {
+    client.println("Acabou");
+  }
+
+
+client.println("</center></h1>"); //ESCREVE "Ola cliente!" NA PÁGINA
+client.println("<center><font size='5'></center>"); //ESCREVE "Seja bem vindo!" NA PÁGINA
 client.println("</html>"); //FECHA A TAG "html"
 delay(1); //INTERVALO DE 1 MILISEGUNDO
 Serial.println("Cliente desconectado"); //ESCREVE O TEXTO NA SERIAL
