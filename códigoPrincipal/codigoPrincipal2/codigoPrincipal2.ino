@@ -90,7 +90,7 @@ void frente(){
   digitalWrite(dirMotorA, LOW);
   analogWrite(pwmMotorB, motorSpeed);
   digitalWrite(dirMotorB, LOW);
-  delay(1500);
+  delay(1800);
      Serial.println(" Frente");
 }
 void esquerda(){

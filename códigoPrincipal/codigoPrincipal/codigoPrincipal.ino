@@ -36,9 +36,6 @@ int sensor3 = D7;//Direita branco
 int valor1;
 int valor2;
 int valor3;
-int htsensor1;
-int htsensor2;
-int htsensor3;
 
 
 //MOTORES
@@ -53,7 +50,7 @@ int motorSpeedNegativo = -100;
 //Matriz
 int x = 0;
 int y = 0;
-#define tam 13
+#define tam 12
 //variaveis auxiliares
 bool saida = false;
 int escolher = 0;
@@ -76,7 +73,6 @@ int matriz [tam][tam] =
 {0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0}
 
 };
 
@@ -97,7 +93,7 @@ void setup()
 {
   Serial.begin(115200);
  // system_update_cpu_freq(160);
- 
+  matriz [0][0] = 1;
 
   pinMode(pwmMotorA , OUTPUT);
   pinMode(pwmMotorB, OUTPUT);
@@ -106,6 +102,7 @@ void setup()
   pinMode(sensor1, INPUT);
   pinMode(sensor2, INPUT);
   pinMode(sensor3, INPUT);
+ 
 
   Serial.println(""); //PULA UMA LINHA NA JANELA SERIAL
   Serial.println(""); //PULA UMA LINHA NA JANELA SERIAL
@@ -129,295 +126,8 @@ void setup()
   Serial.println(WiFi.localIP()); //ESCREVE NA SERIAL O IP RECEBIDO DENTRO DA REDE SEM FIO (O IP NESSA PRÁTICA É RECEBIDO DE FORMA AUTOMÁTICA)
   
 }
-
-void pos(){
-  //O = 0 N = 1 L=2 S=3
- if(ref == 0){
-    x--;
-    matriz [x][y] = 1;
-    x--;
-}
-  else if(ref == 1){
-    y--;
-    matriz [x][y] = 1;
-    y--;
-}
-  else if(ref == 2){
-    x++;
-    matriz [x][y] = 1;
-    x++;
-  }
-  else if(ref == 3){
-    y++;
-    matriz [x][y] = 1;
-    y++;
-  }
-  Serial.print("ref =");
-  Serial.print(ref);
-}
-void frente(){
-   Serial.println("Frente");
-  analogWrite(pwmMotorA, motorSpeed);
-  digitalWrite(dirMotorA, LOW);
-  analogWrite(pwmMotorB, motorSpeed+27);
-  digitalWrite(dirMotorB, HIGH);
-  delay(2100);
-
-  if(ref == 0){
-    x--;
-    matriz [x][y] = 1;
-    x--;
-  }
-  else if(ref == 1){
-    y--;
-    matriz [x][y] = 1;
-    y--;
-  }
-  else if(ref == 2){
-    x++;
-    matriz [x][y] = 1;
-    x++;
-  }
-  else if(ref == 3){
-    y++;
-    matriz [x][y] = 1;
-    y++;
-  }
- 
-   Serial.print("ref =");
-  Serial.print(ref);
-    test = 1;
-
-}
-
-void direita(){
-//O = 0 N = 1 L=2 S=3
- Serial.println("Direita");
- 
-   
-    analogWrite(pwmMotorA, motorSpeed);
-    digitalWrite(dirMotorA, LOW);
-    analogWrite(pwmMotorB, motorSpeed);
-    digitalWrite(dirMotorB, LOW);
-
-    delay(1850);
-
-  analogWrite(pwmMotorA, motorSpeed  );
-  digitalWrite(dirMotorA, LOW);
-  analogWrite(pwmMotorB, motorSpeed);
-  digitalWrite(dirMotorB, HIGH);
-  delay(2100);
-
-  if(ref == 0)
-    ref = 1;
-  else if(ref == 1)
-    ref = 2;
-  else if(ref == 2)
-    ref = 3;
-  else if(ref == 3)
-    ref = 0;
-
-  pos();
-  test = 2;
- 
-
-}
-
-  
-
-void esquerda(){
-   Serial.println("Esquerda");
-
- 
-    analogWrite(pwmMotorA, motorSpeed);
-    digitalWrite(dirMotorA, HIGH);
-    analogWrite(pwmMotorB, motorSpeed);
-    digitalWrite(dirMotorB, HIGH);
-    delay(1600);
-
-  analogWrite(pwmMotorA, motorSpeed );
-  digitalWrite(dirMotorA, LOW);
-  analogWrite(pwmMotorB, motorSpeed +27);
-  digitalWrite(dirMotorB, HIGH);
-  delay(2100);
-
-  if(ref == 0)
-    ref = 3;
-  else if(ref == 3)
-    ref = 2;
-  else if(ref == 2)
-    ref = 1;
-  else if(ref == 1)
-    ref = 0;
-
-  pos();
-  test = 3;
-  
-}
-
-void retorno(){
-    
-   analogWrite(pwmMotorA, motorSpeed);
-  digitalWrite(dirMotorA, LOW);
-  analogWrite(pwmMotorB, motorSpeed);
-  digitalWrite(dirMotorB, LOW);
-  delay(3300);
-
-  analogWrite(pwmMotorA, motorSpeed);
-  digitalWrite(dirMotorA, HIGH);
-  analogWrite(pwmMotorB, motorSpeed);
-  digitalWrite(dirMotorB, LOW);
-  delay(2100);
-//O = 0 N = 1 L=2 S=3
-  if(ref == 0)
-    ref = 2;
-  else if(ref == 2)
-    ref = 0;
-  else if(ref == 1)
-    ref = 3;
-  else if(ref == 3)
-    ref = 1;
-
-
-  test = 4;
-}
-
-
-
-
-
-  void loop()
+void web()
 {
-
-
-  if (y > 12){
-    while(true){
-      analogWrite(pwmMotorA, 0  );
-      digitalWrite(dirMotorA, LOW);
-      analogWrite(pwmMotorB,0);
-      digitalWrite(dirMotorB, LOW);
-    }
-  }
-  if (x > 12){
-    while(true){
-      analogWrite(pwmMotorA, 0  );
-      digitalWrite(dirMotorA, LOW);
-      analogWrite(pwmMotorB,0);
-      digitalWrite(dirMotorB, LOW);
-    }
-  }
-
-  if (y < 0){
-    while(true){
-      analogWrite(pwmMotorA, 0  );
-      digitalWrite(dirMotorA, LOW);
-      analogWrite(pwmMotorB,0);
-      digitalWrite(dirMotorB, LOW);
-    }
-  }
-  if (x < 0){
-    while(true){
-      analogWrite(pwmMotorA, 0  );
-      digitalWrite(dirMotorA, LOW);
-      analogWrite(pwmMotorB,0);
-      digitalWrite(dirMotorB, LOW);
-    }
-  }
-  //O = 0 N = 1 L=2 S=3
-  delay(500);
-  matriz [0][0] = 1;
-  Serial.println("");
-  mostrar_matriz();
-    Serial.println("");
-  analogWrite(pwmMotorA, 0  );
-  digitalWrite(dirMotorA, LOW);
-  analogWrite(pwmMotorB,0);
-  digitalWrite(dirMotorB, LOW);
-  delay(1000);
-  //O = 0 N = 1 L=2 S=3
-    
-
-
-  valor1 = digitalRead(sensor1);
-  htsensor1 = digitalRead(sensor1);
- Serial.println(valor1);//Diminuir energia**/
-  valor2 = digitalRead(sensor2);
-    htsensor2 = digitalRead(sensor2);
-  Serial.print(valor2); //valor invertido;
-  valor3 = digitalRead(sensor3);
-    htsensor3 = digitalRead(sensor3);
- Serial.print(valor3);
-  
-    
-  if(valor1 == 0 and valor2 == 1 and valor3 ==0){
-   // paredes(false,true,false);
-    frente();
-    matriz  [x][y] = 1;
-}
-
-  else if(valor1 == 0 and valor2 == 0 and valor3 ==1){
-  //  paredes(false,false,true);
-    direita();
-    matriz  [x][y] = 1;
-    }
-   
-  else if(valor1 == 1 and valor2 == 0 and valor3 ==0){
-   // paredes(true,false,false);
-    esquerda();
-    matriz  [x][y] = 1;
-    }
-
-  else if(valor1 == 0 and valor2 == 0 and valor3 ==0){
-    retorno();
-    }
-
-
-  else if(valor1 == 0 and valor2 == 1 and valor3 ==1){
-  
-      direita();
-      matriz  [x][y] = 1;
-    
-  
-   
-    }
-  else if(valor1 == 1 and valor2 == 0 and valor3 ==1){
-    
-   
-      direita();
-      matriz  [x][y] = 1;
-    
-  
-    }
-  else if(valor1 == 1 and valor2 == 1 and valor3 ==0){
-    escolher = random(0,2);
-    if (escolher == 1){
-     // paredes(true,true,false);
-      esquerda();
-      matriz  [x][y] = 1;
-    }
-    else if (escolher == 2){
-     // paredes(true,true,false);
-      frente();
-      matriz  [x][y] = 1;
-    }
-  } 
-   else if(valor1 == 1 and valor2 == 1 and valor3 ==1){
-      delay(1000);
-    }
-
-    Serial.println("");
-    Serial.print("X:");
-    Serial.println(x);
-    Serial.print("Y:");
-    Serial.print(y);
-    Serial.println("");
-  
-  /*else if(valor1 == 1 and valor2 == 1 and valor3 ==1)
-    Serial.print(sai);
-
-  };*/
- 
-
 WiFiClient client = server.available(); //VERIFICA SE ALGUM CLIENTE ESTÁ CONECTADO NO SERVIDOR
 if (!client) { //SE NÃO EXISTIR CLIENTE CONECTADO, FAZ
 return; //REEXECUTA O PROCESSO ATÉ QUE ALGUM CLIENTE SE CONECTE AO SERVIDOR
@@ -479,10 +189,7 @@ client.println("<br>");
     client.println("Y:");
     client.println(y);
     client.println("<br>");
-    if (x == 12 and y ==12)
-  {
-    client.println("Acabou");
-  }
+  
 
 
 client.println("</center></h1>"); //ESCREVE "Ola cliente!" NA PÁGINA
@@ -491,5 +198,246 @@ client.println("</html>"); //FECHA A TAG "html"
 delay(1); //INTERVALO DE 1 MILISEGUNDO
 Serial.println("Cliente desconectado"); //ESCREVE O TEXTO NA SERIAL
 Serial.println(""); //PULA UMA LINHA NA JANELA SERIAL
+}
+void pos(){
+  //O = 0 N = 1 L=2 S=3
+ if(ref == 0){
+    x--;
+    matriz [x][y] = 1;
+    x--;
+}
+  else if(ref == 1){
+    y--;
+    matriz [x][y] = 1;
+    y--;
+}
+  else if(ref == 2){
+    x++;
+    matriz [x][y] = 1;
+    x++;
+  }
+  else if(ref == 3){
+    y++;
+    matriz [x][y] = 1;
+    y++;
+  }
+  Serial.print("ref =");
+  Serial.print(ref);
+}
+
+void frente(){
+  
+  Serial.println("Frente");
+  analogWrite(pwmMotorA, motorSpeed);
+  digitalWrite(dirMotorA, LOW);
+  analogWrite(pwmMotorB, motorSpeed+27);
+  digitalWrite(dirMotorB, HIGH);
+  delay(2500);
+
+  if(ref == 0){
+    x--;
+    matriz [x][y] = 1;
+    x--;
+  }
+  else if(ref == 1){
+    y--;
+    matriz [x][y] = 1;
+    y--;
+  }
+  else if(ref == 2){
+    x++;
+    matriz [x][y] = 1;
+    x++;
+  }
+  else if(ref == 3){
+    y++;
+    matriz [x][y] = 1;
+    y++;
+  }
+ 
+   Serial.print("ref =");
+  Serial.print(ref);
+    test = 1;
+
+}
+
+void direita(){
+//O = 0 N = 1 L=2 S=3
+ Serial.println("Direita");
+ 
+   
+    analogWrite(pwmMotorA, motorSpeed);
+    digitalWrite(dirMotorA, LOW);
+    analogWrite(pwmMotorB, motorSpeed);
+    digitalWrite(dirMotorB, LOW);
+
+    delay(1850);
+
+  analogWrite(pwmMotorA, motorSpeed  );
+  digitalWrite(dirMotorA, LOW);
+  analogWrite(pwmMotorB, motorSpeed);
+  digitalWrite(dirMotorB, HIGH);
+  delay(2400);
+
+  if(ref == 0)
+    ref = 1;
+  else if(ref == 1)
+    ref = 2;
+  else if(ref == 2)
+    ref = 3;
+  else if(ref == 3)
+    ref = 0;
+
+  pos();
+  test = 2;
+ 
+
+}
+
+  
+
+void esquerda(){
+   Serial.println("Esquerda");
+
+ 
+    analogWrite(pwmMotorA, motorSpeed);
+    digitalWrite(dirMotorA, HIGH);
+    analogWrite(pwmMotorB, motorSpeed);
+    digitalWrite(dirMotorB, HIGH);
+    delay(1600);
+
+  analogWrite(pwmMotorA, motorSpeed );
+  digitalWrite(dirMotorA, LOW);
+  analogWrite(pwmMotorB, motorSpeed +27);
+  digitalWrite(dirMotorB, HIGH);
+  delay(2400);
+
+  if(ref == 0)
+    ref = 3;
+  else if(ref == 3)
+    ref = 2;
+  else if(ref == 2)
+    ref = 1;
+  else if(ref == 1)
+    ref = 0;
+
+  pos();
+  test = 3;
+  
+}
+
+void retorno(){
+    
+   analogWrite(pwmMotorA, motorSpeed);
+  digitalWrite(dirMotorA, LOW);
+  analogWrite(pwmMotorB, motorSpeed);
+  digitalWrite(dirMotorB, LOW);
+  delay(3300);
+
+  analogWrite(pwmMotorA, motorSpeed);
+  digitalWrite(dirMotorA, LOW);
+  analogWrite(pwmMotorB, motorSpeed+27);
+  digitalWrite(dirMotorB, HIGH);
+  delay(2500);
+//O = 0 N = 1 L=2 S=3
+  if(ref == 0)
+    ref = 2;
+  else if(ref == 2)
+    ref = 0;
+  else if(ref == 1)
+    ref = 3;
+  else if(ref == 3)
+    ref = 1;
+
+
+  test = 4;
+}
+
+
+
+
+
+  void loop()
+{
+  //O = 0 N = 1 L=2 S=3
+  delay(500);
+
+  Serial.println("");
+  mostrar_matriz();
+  Serial.println("");
+  analogWrite(pwmMotorA, 0  );
+  digitalWrite(dirMotorA, LOW);
+  analogWrite(pwmMotorB,0);
+  digitalWrite(dirMotorB, LOW);
+  delay(1000);
+  
+  Serial.println("");
+  Serial.print("X:");
+  Serial.println(x);
+  Serial.print("Y:");
+  Serial.print(y);
+  Serial.println("");
+    
+
+
+  valor1 = digitalRead(sensor1);
+  Serial.println(valor1);//Diminuir energia**/
+  valor2 = digitalRead(sensor2);
+  Serial.print(valor2); //valor invertido;
+  valor3 = digitalRead(sensor3);
+  Serial.print(valor3);
+  
+    
+  if(valor1 == 0 and valor2 == 1 and valor3 ==0){
+   // paredes(false,true,false);
+    frente();
+    matriz  [x][y] = 1;
+}
+
+  else if(valor1 == 0 and valor2 == 0 and valor3 ==1){
+  //  paredes(false,false,true);
+    direita();
+    matriz  [x][y] = 1;
+    }
+   
+  else if(valor1 == 1 and valor2 == 0 and valor3 ==0){
+   // paredes(true,false,false);
+    esquerda();
+    matriz  [x][y] = 1;
+    }
+
+  else if(valor1 == 0 and valor2 == 0 and valor3 ==0){
+    retorno();
+    }
+
+  else if(valor1 == 0 and valor2 == 1 and valor3 ==1){
+      direita();
+      matriz  [x][y] = 1;
+    }
+  else if(valor1 == 1 and valor2 == 0 and valor3 ==1){
+      direita();
+      matriz  [x][y] = 1;
+    }
+  else if(valor1 == 1 and valor2 == 1 and valor3 ==0){
+    escolher = random(0,2);
+    if (escolher == 1){
+     // paredes(true,true,false);
+      esquerda();
+      matriz  [x][y] = 1;
+    }
+    else if (escolher == 2){
+     // paredes(true,true,false);
+      frente();
+      matriz  [x][y] = 1;
+    }
+  } 
+   else if(valor1 == 1 and valor2 == 1 and valor3 ==1){
+      delay(1000);
+    }
+
+  
+ 
+ 
+
 
 }
