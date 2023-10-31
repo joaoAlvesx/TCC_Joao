@@ -33,38 +33,44 @@ int motorSpeedNegativo = -100;
 //Matriz
 int x = 0;
 int y = 0;
-#define tam 12
+int a, b, indice=0,cont=0;
+int origem[2],destino[2];
+#define tamanho 14
 //variaveis auxiliares
-bool saida = false;
+
 int escolher = 0;
 
 //O = 0 N = 1 L=2 S=3
 int ref = 2;
 
-int matriz [tam][tam] =
-{
+int caminho [tamanho][tamanho];
+int aux [tamanho][tamanho];
+int matriz [tamanho][tamanho];
 
-{0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0}
+int cenario [tamanho][tamanho] =
+{
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,-99,0,1,1,1,0,0,0,0,0,0,0,0},
+{0,1,0,0,0,1,0,0,0,0,0,0,0,0},
+{0,1,1,1,1,1,1,1,1,1,1,1,0,0},
+{0,0,0,1,0,0,0,0,0,0,1,0,0,0},
+{0,1,1,1,1,1,0,0,0,0,1,0,0,0},
+{0,1,0,0,0,1,0,0,0,0,1,1,1,0},
+{0,1,0,1,0,1,0,0,0,0,0,0,1,0},
+{0,1,0,1,0,1,1,1,1,1,1,0,1,0},
+{0,1,0,1,0,0,0,0,0,1,0,0,1,0},
+{0,1,0,1,1,1,0,0,0,1,1,1,1,0},
+{0,1,0,1,0,0,0,0,0,1,0,0,0,0},
+{0,1,1,1,1,1,1,1,1,1,1,1,999,0},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 
 };
-
 
 void setup()
 {
   Serial.begin(115200);
  // system_update_cpu_freq(160);
- 
+
 
   pinMode(pwmMotorA , OUTPUT);
   pinMode(pwmMotorB, OUTPUT);
@@ -73,96 +79,137 @@ void setup()
   pinMode(sensor1, INPUT);
   pinMode(sensor2, INPUT);
   pinMode(sensor3, INPUT);
-
+  Serial.println("funfou");
+  for (int y = 0; y<tamanho;y++){
+      for (int x = 0; x<tamanho;x++){
+      aux[x][y] = -20;
+      }
+    }
   }
-void mostrar_matriz(){
-  for (int y = 0; y<8;y++){
-    for (int x = 0; x<8;x++){
-      Serial.print(matriz[x][y]);
+
+
+void busca()
+{
+
+  for(y=0;y<tamanho;y++)
+  {
+    for(x=0;x<tamanho;x++)
+    {
+      if(cenario[x][y] == -99)	
+      {
+        origem[0] = x; 
+        origem[1] = y;
+        matriz[x][y]=0;
+        aux[x][y]=0;
+        
+      }
+      if(cenario[x][y] == 999)	
+      {
+        destino[0] = x; 
+        destino[1] = y;
+        matriz[x][y]=999;
+        aux[x][y]=999;
+
+      }
+      if(cenario[x][y] == 1)
+      {
+        matriz[x][y]=-60;
+        aux[x][y]=-60;
+      }
+      if(cenario[x][y] == 0)	
+      {
+        matriz[x][y]=-30;
+        aux[x][y]=-30;
+        
+      }
+      Serial.print(cenario[x][y]);
+      Serial.print(" ");
+      Serial.print(aux[x][y]);
+      Serial.println("");
+      delay(100);
+      }
+  }
+   for (int y = 0; y<tamanho;y++){
+      for (int x = 0; x<tamanho;x++){
+        Serial.print(aux[x][y]);
+      }
+      Serial.println(" ");
     }
     Serial.println(" ");
-  }
-
-}
-void frente(){
-  
-  analogWrite(pwmMotorA, motorSpeed+27  );
-  digitalWrite(dirMotorA, LOW);
-  analogWrite(pwmMotorB, motorSpeed);
-  digitalWrite(dirMotorB, LOW);
-  delay(1800);
-     Serial.println(" Frente");
-}
-void esquerda(){
-
-  while (valor2 == 0 and valor3 == 0){
-      valor2 = digitalRead(sensor2);
-      valor3 = digitalRead(sensor3);
-      analogWrite(pwmMotorA, 100);
-      digitalWrite(dirMotorA, LOW);
-      analogWrite(pwmMotorB, 100);
-      digitalWrite(dirMotorB, HIGH);
-  }
-
-  analogWrite(pwmMotorA, motorSpeed +27 );
-  digitalWrite(dirMotorA, LOW);
-  analogWrite(pwmMotorB, motorSpeed);
-  digitalWrite(dirMotorB, LOW);
-  delay(1000);
-     Serial.println("Esquerda ");
-}
-void direita(){
-
- while (valor2 == 0 and valor1 == 0){
-    valor2 = digitalRead(sensor2);
-    valor1 = digitalRead(sensor1);
-    analogWrite(pwmMotorA, motorSpeed);
-    digitalWrite(dirMotorA, HIGH);
-    analogWrite(pwmMotorB, motorSpeed);
-    digitalWrite(dirMotorB, LOW);
- }
-
-  analogWrite(pwmMotorA, motorSpeed  );
-  digitalWrite(dirMotorA, LOW);
-  analogWrite(pwmMotorB, motorSpeed+27);
-  digitalWrite(dirMotorB, LOW);
-  delay(1000);
-     Serial.println("Direita ");
-  }
-  void retorno(){
-  while (valor2 == 0 ){
-      valor2 = digitalRead(sensor2);
-     
-     
-      analogWrite(pwmMotorA, 100);
-      digitalWrite(dirMotorA, LOW);
-      analogWrite(pwmMotorB, 100);
-      digitalWrite(dirMotorB, HIGH);
-  }
-
-    analogWrite(pwmMotorA, motorSpeed);
-    digitalWrite(dirMotorA, LOW);
-    analogWrite(pwmMotorB, motorSpeed);
-    digitalWrite(dirMotorB, HIGH);
     delay(500);
+  Serial.println("teste ");
+  
+  int achou=0;
+  while (achou==0)
+  {
+    for (y=0;y<tamanho;y++)
+    {
+      for(x=0;x<tamanho;x++)
+      {
+        if(aux[x][y]==indice)
+        {
+          cont++;
+        }
+      }
+    }
+    
+    if (cont>=1)
+    {
+      for (y=0;y<tamanho;y++)
+      {
+        for(x=0;x<tamanho;x++)
+        {
+          if(aux[x][y]==indice)
+          {
+            a=x;
+            b=y;
+            aux[x][y]=-99; //-2 na tabela auxiliar significa que foi lido o campo
+            
+            if (matriz[a+1][b]==-60)	{	matriz[a+1][b]=indice+1;	aux[a+1][b]=indice+1; 		}
+            if (matriz[a][b+1]==-60)	{	matriz[a][b+1]=indice+1;	aux[a][b+1]=indice+1;		}
+            if (matriz[a-1][b]==-60)	{	matriz[a-1][b]=indice+1;	aux[a-1][b]=indice+1; 		}
+            if (matriz[a][b-1]==-60)	{	matriz[a][b-1]=indice+1;	aux[a][b-1]=indice+1;		}
+            
+            if(matriz[a+1][b]==999 || matriz[a][b+1]==999 ||matriz[a-1][b]==999 ||matriz[a][b-1]==999 )	{achou=1;}
+            cont--;
 
-    analogWrite(pwmMotorA, 0);
-    digitalWrite(dirMotorA, LOW);
-    analogWrite(pwmMotorB, 0);
-    digitalWrite(dirMotorB, LOW);
-    delay(1500);
+          }
+        }
+
+      }
+      
+        }
+    if (cont==0)
+      {
+        indice++;
+      }
+  }		
+    caminho[origem[0]][origem[1]]=indice;
+    caminho[destino[0]][destino[1]]=-10;
+
+    a=origem[0];
+    b=origem[1];
+
+    caminho[a][b]=indice;
+
+    while(indice>1)
+    {	indice--;
+          if (matriz[a-1][b]==indice)	{	caminho[a-1][b]=indice;		a=a-1;	b=b;	}		//1
+        else	if (matriz[a+1][b]==indice)	{	caminho[a+1][b]=indice;		a=a+1;	b=b;	}	//2
+        else 	if (matriz[a][b+1]==indice)	{	caminho[a][b+1]=indice;		a=a;	b=b+1;	}	//3
+        else	if (matriz[a][b-1]==indice)	{	caminho[a][b-1]=indice;		a=a;	b=b-1;	}	//4
+        //muldar 3 e 4 pra 2 e 3 altera a busca de baixo para lateral
+      
+    }
+
+    
   }
-  void loop()
-{    
-   analogWrite(pwmMotorA, motorSpeed);
-  digitalWrite(dirMotorA, LOW);
-  analogWrite(pwmMotorB, motorSpeed);
-  digitalWrite(dirMotorB, LOW);
-  delay(3300);
-  analogWrite(pwmMotorA, 0);
-  digitalWrite(dirMotorA, LOW);
-  analogWrite(pwmMotorB, 0);
-  digitalWrite(dirMotorB, LOW);
-  delay(3000);
- 
+
+
+
+void loop()
+{
+  busca();
+  delay(5000);
+
 }
