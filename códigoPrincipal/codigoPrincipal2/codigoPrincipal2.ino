@@ -80,9 +80,10 @@ void setup()
   pinMode(sensor2, INPUT);
   pinMode(sensor3, INPUT);
   Serial.println("funfou");
-  for (int y = 0; y<tamanho;y++){
-      for (int x = 0; x<tamanho;x++){
+  for (int x = 0; x<tamanho;x++){
+      for (int y = 0; y<tamanho;y++){
       aux[x][y] = -20;
+       caminho[x][y] = 00;
       }
     }
   }
@@ -91,9 +92,9 @@ void setup()
 void busca()
 {
 
-  for(y=0;y<tamanho;y++)
+  for(x=0;x<tamanho;x++)
   {
-    for(x=0;x<tamanho;x++)
+    for(y=0;y<tamanho;y++)
     {
       if(cenario[x][y] == -99)	
       {
@@ -122,25 +123,14 @@ void busca()
         aux[x][y]=-30;
         
       }
-      Serial.print(cenario[x][y]);
-      Serial.print(" ");
-      Serial.print(aux[x][y]);
-      Serial.println("");
-      delay(100);
+      
       }
   }
-   for (int y = 0; y<tamanho;y++){
-      for (int x = 0; x<tamanho;x++){
-        Serial.print(aux[x][y]);
-      }
-      Serial.println(" ");
-    }
-    Serial.println(" ");
-    delay(500);
-  Serial.println("teste ");
+  
   
   int achou=0;
   while (achou==0)
+   
   {
     for (y=0;y<tamanho;y++)
     {
@@ -148,6 +138,7 @@ void busca()
       {
         if(aux[x][y]==indice)
         {
+         
           cont++;
         }
       }
@@ -161,6 +152,7 @@ void busca()
         {
           if(aux[x][y]==indice)
           {
+      
             a=x;
             b=y;
             aux[x][y]=-99; //-2 na tabela auxiliar significa que foi lido o campo
@@ -170,7 +162,7 @@ void busca()
             if (matriz[a-1][b]==-60)	{	matriz[a-1][b]=indice+1;	aux[a-1][b]=indice+1; 		}
             if (matriz[a][b-1]==-60)	{	matriz[a][b-1]=indice+1;	aux[a][b-1]=indice+1;		}
             
-            if(matriz[a+1][b]==999 || matriz[a][b+1]==999 ||matriz[a-1][b]==999 ||matriz[a][b-1]==999 )	{achou=1;}
+            if(matriz[a+1][b]==999 || matriz[a][b+1]==999 ||matriz[a-1][b]==999 ||matriz[a][b-1]==999 )	{ Serial.println("achou = 1 ");achou=1;}
             cont--;
 
           }
@@ -183,25 +175,53 @@ void busca()
       {
         indice++;
       }
-  }		
-    caminho[origem[0]][origem[1]]=indice;
-    caminho[destino[0]][destino[1]]=-10;
+  }	
+
+     for (int x = 0; x<tamanho;x++){
+      for (int y = 0; y<tamanho;y++){
+        Serial.print("|");
+        Serial.print(matriz[x][y]);
+        Serial.print("|");
+      }
+      Serial.println(" ");
+    }
+    Serial.println(" ");
+    delay(500);
+ 
+    
+  
+    
+    caminho[origem[0]][origem[1]]=-10;
+    caminho[destino[0]][destino[1]]=indice;
 
     a=origem[0];
     b=origem[1];
 
-    caminho[a][b]=indice;
-
-    while(indice>1)
-    {	indice--;
-          if (matriz[a-1][b]==indice)	{	caminho[a-1][b]=indice;		a=a-1;	b=b;	}		//1
-        else	if (matriz[a+1][b]==indice)	{	caminho[a+1][b]=indice;		a=a+1;	b=b;	}	//2
-        else 	if (matriz[a][b+1]==indice)	{	caminho[a][b+1]=indice;		a=a;	b=b+1;	}	//3
-        else	if (matriz[a][b-1]==indice)	{	caminho[a][b-1]=indice;		a=a;	b=b-1;	}	//4
+   
+    int busca = 0;
+    while(busca<indice)
+    {	busca++;
+        
+        
+          if (matriz[a-1][b]==busca)	{	caminho[a-1][b]=busca+1;		a=a-1;	b=b;	}		//1
+        else	if (matriz[a+1][b]==busca)	{	caminho[a+1][b]=busca+1;		a=a+1;	b=b;	}	//2
+        else 	if (matriz[a][b+1]==busca)	{	caminho[a][b+1]=busca+1;		a=a;	b=b+1;	}	//3
+        else	if (matriz[a][b-1]==busca)	{	caminho[a][b-1]=busca+1;		a=a;	b=b-1;	}	//4
         //muldar 3 e 4 pra 2 e 3 altera a busca de baixo para lateral
       
     }
-
+    caminho[origem[0]][origem[1]]=01;
+ for (int x = 0; x<tamanho;x++){
+      for (int y = 0; y<tamanho;y++){
+        Serial.print(" |");
+        Serial.print(caminho[x][y]);
+        Serial.print("| ");
+      }
+      Serial.println(" ");
+    }
+    Serial.println(" ");
+    delay(500);
+ 
     
   }
 
