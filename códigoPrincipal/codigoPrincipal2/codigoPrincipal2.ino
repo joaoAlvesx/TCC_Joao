@@ -50,17 +50,17 @@ int matriz [tamanho][tamanho];
 int cenario [tamanho][tamanho] =
 {
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,-99,0,1,1,1,0,0,0,0,0,0,0,0},
+{0,-99,1,1,1,1,0,0,0,0,0,0,0,0},
 {0,1,0,0,0,1,0,0,0,0,0,0,0,0},
 {0,1,1,1,1,1,1,1,1,1,1,1,0,0},
-{0,0,0,1,0,0,0,0,0,0,1,0,0,0},
+{0,1,0,1,0,0,0,0,0,0,1,0,0,0},
 {0,1,1,1,1,1,0,0,0,0,1,0,0,0},
 {0,1,0,0,0,1,0,0,0,0,1,1,1,0},
-{0,1,0,1,0,1,0,0,0,0,0,0,1,0},
+{0,1,0,1,0,1,0,0,0,0,1,0,1,0},
 {0,1,0,1,0,1,1,1,1,1,1,0,1,0},
-{0,1,0,1,0,0,0,0,0,1,0,0,1,0},
-{0,1,0,1,1,1,0,0,0,1,1,1,1,0},
-{0,1,0,1,0,0,0,0,0,1,0,0,0,0},
+{0,1,0,1,0,0,0,0,0,1,1,0,1,0},
+{0,1,1,1,1,1,0,0,0,1,1,1,1,0},
+{0,0,0,0,0,1,0,0,0,0,1,1,0,0},
 {0,1,1,1,1,1,1,1,1,1,1,1,999,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 
@@ -157,8 +157,8 @@ void busca()
             b=y;
             aux[x][y]=-99; //-2 na tabela auxiliar significa que foi lido o campo
             
+            if (matriz[a][b+1]==-60)  { matriz[a][b+1]=indice+1;  aux[a][b+1]=indice+1;   }
             if (matriz[a+1][b]==-60)	{	matriz[a+1][b]=indice+1;	aux[a+1][b]=indice+1; 		}
-            if (matriz[a][b+1]==-60)	{	matriz[a][b+1]=indice+1;	aux[a][b+1]=indice+1;		}
             if (matriz[a-1][b]==-60)	{	matriz[a-1][b]=indice+1;	aux[a-1][b]=indice+1; 		}
             if (matriz[a][b-1]==-60)	{	matriz[a][b-1]=indice+1;	aux[a][b-1]=indice+1;		}
             
@@ -202,10 +202,9 @@ void busca()
     while(busca<indice)
     {	busca++;
         
-        
-          if (matriz[a-1][b]==busca)	{	caminho[a-1][b]=busca+1;		a=a-1;	b=b;	}		//1
-        else	if (matriz[a+1][b]==busca)	{	caminho[a+1][b]=busca+1;		a=a+1;	b=b;	}	//2
-        else 	if (matriz[a][b+1]==busca)	{	caminho[a][b+1]=busca+1;		a=a;	b=b+1;	}	//3
+        if (matriz[a+1][b]==busca)  { caminho[a+1][b]=busca+1;    a=a+1;  b=b;  } //2
+        else   if (matriz[a][b+1]==busca)  { caminho[a][b+1]=busca+1;    a=a;  b=b+1;  } //3
+        else if (matriz[a-1][b]==busca)	{	caminho[a-1][b]=busca+1;		a=a-1;	b=b;	}		//1
         else	if (matriz[a][b-1]==busca)	{	caminho[a][b-1]=busca+1;		a=a;	b=b-1;	}	//4
         //muldar 3 e 4 pra 2 e 3 altera a busca de baixo para lateral
       
