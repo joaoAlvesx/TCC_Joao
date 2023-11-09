@@ -66,7 +66,7 @@ int cenario [tamanho][tamanho] =
 
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,-99,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,1,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -189,11 +189,11 @@ void web()
   }
   client.println("<br>"); 
   client.println("<br>"); 
-  client.print("Caminho"); 
+  client.print("cenario"); 
   client.println("<br>"); 
 
-   for (int x = 0; x<tamanho;x++){
-      for (int y = 0; y<tamanho;y++){
+   for (int y = 0; y<tamanho;y++){
+      for (int x = 0; x<tamanho;x++){
        client.print(" |");
        client.print(cenario[x][y]);
     
@@ -201,7 +201,19 @@ void web()
       }
      client.println("<br>"); 
     }
+  client.println("<br>");   
+  client.print("Caminho"); 
+  client.println("<br>"); 
 
+   for (int y = 0; y<tamanho;y++){
+      for (int x = 0; x<tamanho;x++){
+       client.print(" |");
+       client.print(caminho[x][y]);
+    
+       client.print("| ");
+      }
+     client.println("<br>"); 
+    }
 
     client.println("<br>");
       client.println("X:");
@@ -378,6 +390,7 @@ void mapeamneto(){
   yield();
   int final_labirinto = 0;
   Serial.println("dentro da map wile");
+  web();
   while (final_labirinto == 0){
   
 
@@ -402,11 +415,14 @@ void mapeamneto(){
     
     
       valor1 = digitalRead(sensor1);
+      Serial.print("sensor esquerda");
       Serial.println(valor1);//Diminuir energia**/
       valor2 = digitalRead(sensor2);
-      Serial.print(valor2); //valor invertido;
+      Serial.print("sensor frente");
+      Serial.println(valor2); //valor invertido;
       valor3 = digitalRead(sensor3);
-      Serial.print(valor3);
+      Serial.print("sensor direita");
+      Serial.println(valor3);
       
         
       if(valor1 == 0 and valor2 == 1 and valor3 ==0){
@@ -455,18 +471,19 @@ void mapeamneto(){
       else if(valor1 == 1 and valor2 == 1 and valor3 ==1){
           delay(1000);
         }
-     if (x == 13 and y == 13){
+     if (x >= 13 and y >= 13){
       final_labirinto = 1;
       
      }
-           web();
-           }
+    web();  
+  }
 }
 
 void busca()
 {
+  web();
   Serial.println("to AQUI ");
-yield();
+  yield();
   for(x=0;x<tamanho;x++)
   {yield();
     for(y=0;y<tamanho;y++)
@@ -485,6 +502,7 @@ yield();
         destino[1] = y;
         matriz[x][y]=999;
         aux[x][y]=999;
+        
 
       }
       if(cenario[x][y] == 1)
@@ -553,8 +571,8 @@ yield();
       }yield();
   } 
   Serial.println("to AQUIfdfd ");
-     for (int x = 0; x<tamanho;x++){
-      for (int y = 0; y<tamanho;y++){
+     for (int y = 0; y<tamanho;y++){
+      for (int x = 0; x<tamanho;x++){
         Serial.print("|");
         Serial.print(matriz[x][y]);
         Serial.print("|");
@@ -587,8 +605,8 @@ yield();
       
     }
     caminho[origem[0]][origem[1]]=01;
- for (int x = 0; x<tamanho;x++){
-      for (int y = 0; y<tamanho;y++){
+ for (int y = 0; y<tamanho;y++){
+      for (int x = 0; x<tamanho;x++){
         Serial.print(" |");
         Serial.print(caminho[x][y]);
         Serial.print("| ");
@@ -598,7 +616,7 @@ yield();
     Serial.println(" ");
     delay(500);
  
-    
+    web();
   }
 
   void loop()
