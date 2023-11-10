@@ -47,7 +47,7 @@ int motorSpeed = 100;
 int motorSpeedNegativo = -100;
 
 //Matriz
-int x = 2;
+int x = 1;
 int y = 2;
 #define tamanho 14
 int a, b, indice=0,cont=0;
@@ -65,7 +65,6 @@ int cenario [tamanho][tamanho] =
 {
 
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,-99,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -76,29 +75,23 @@ int cenario [tamanho][tamanho] =
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,0,0,0,0,0,0,0,999,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 
 };
 
-void mostrar_matriz(){
-  for (int x = 0; x<tamanho;y++){
-    for (int y = 0; y<tamanho;y++){
-      Serial.print(cenario[x][y]);
-    }
-    Serial.println(" ");
-  }
 
-
-
-}
 
 
 void setup()
 {
   Serial.begin(115200);
  // system_update_cpu_freq(160);
-  matriz [0][0] = 999;
+
+cenario[1][1] = -99;
+cenario[1][2] = 1;
+cenario[13][12] = 999;
 
   pinMode(pwmMotorA , OUTPUT);
   pinMode(pwmMotorB, OUTPUT);
@@ -423,7 +416,15 @@ void mapeamneto(){
       valor3 = digitalRead(sensor3);
       Serial.print("sensor direita");
       Serial.println(valor3);
-      
+      for (int x = 0; x<tamanho;x++){
+    for (int y = 0; y<tamanho;y++){
+      Serial.print(" |");
+        Serial.print(cenario[x][y]);
+        Serial.print("| ");
+      }
+      Serial.println(" ");
+    }
+    Serial.println(" ");
         
       if(valor1 == 0 and valor2 == 1 and valor3 ==0){
       // paredes(false,true,false);
@@ -471,12 +472,14 @@ void mapeamneto(){
       else if(valor1 == 1 and valor2 == 1 and valor3 ==1){
           delay(1000);
         }
-     if (x >= 13 and y >= 13){
+     if (x >= 12 and y >= 12){
       final_labirinto = 1;
       
      }
     web();  
-   mostrar_matriz();
+    delay(1000);
+    
+ 
   }
 }
 
