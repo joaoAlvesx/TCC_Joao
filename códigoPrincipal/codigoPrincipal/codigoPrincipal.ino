@@ -29,8 +29,8 @@ int test = 0;
 
 //sensores
 int sensor1 = D0;//Esquerda azul/
-int sensor2 = D5;//Frente/
-int sensor3 = D7;//Direita branco
+int sensor2 = D3;//Frente/
+int sensor3 = D8;//Direita branco
 
 int valor1;
 int valor2;
@@ -80,6 +80,9 @@ int cenario [tamanho][tamanho] =
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 
 };
+
+
+
 
 
 
@@ -225,27 +228,51 @@ void web()
   Serial.println(""); //PULA UMA LINHA NA JANELA SERIAL
   yield();
 }
-void pos(){
+void verificarXY(){
+      if(cenario[x][y] == -99)  
+      {
+        Serial.print("Nao adiciono valor");
+      }
+      else if(cenario[x][y] == 999)  
+      {
+        Serial.print("Nao adiciono valor");
+      }
+    
+      else if(cenario[x][y] == 0)  
+      {
+        cenario[x][y]= 1;
+      }
+      else if(cenario[x][y] == 1)  
+      {
+        Serial.print("Nao adiciono valor");
+      }
+
+}
+void adicionarValorMatriz(){
   //O = 0 N = 1 L=2 S=3
  if(ref == 0){
     x--;
-    cenario [x][y] = 1;
+    verificarXY();
     x--;
+    verificarXY();
 }
   else if(ref == 1){
     y--;
-    cenario [x][y] = 1;
+    verificarXY();
     y--;
+    verificarXY();
 }
   else if(ref == 2){
     x++;
-    cenario [x][y] = 1;
+    verificarXY();
     x++;
+    verificarXY();
   }
   else if(ref == 3){
     y++;
-    cenario [x][y] = 1;
+    verificarXY();
     y++;
+    verificarXY();
   }
   Serial.print("ref =");
   Serial.print(ref);
@@ -260,30 +287,11 @@ void frente(){
   digitalWrite(dirMotorB, HIGH);
   delay(2500);
 
-  if(ref == 0){
-    x--;
-    cenario [x][y] = 1;
-    x--;
-  }
-  else if(ref == 1){
-    y--;
-    cenario [x][y] = 1;
-    y--;
-  }
-  else if(ref == 2){
-    x++;
-    cenario [x][y] = 1;
-    x++;
-  }
-  else if(ref == 3){
-    y++;
-    cenario [x][y] = 1;
-    y++;
-  }
+  adicionarValorMatriz();
  
    Serial.print("ref =");
   Serial.print(ref);
-    test = 1;
+    test  = 1;
 
 }
 
@@ -314,12 +322,11 @@ void direita(){
   else if(ref == 3)
     ref = 0;
 
-  pos();
+
   test = 2;
  
 
 }
-
   
 
 void esquerda(){
@@ -347,7 +354,7 @@ void esquerda(){
   else if(ref == 1)
     ref = 0;
 
-  pos();
+  
   test = 3;
   
 }
@@ -375,8 +382,6 @@ void retorno(){
   else if(ref == 3)
     ref = 1;
 
-
-  test = 4;
 }
 
 void mapeamneto(){
@@ -416,8 +421,8 @@ void mapeamneto(){
       valor3 = digitalRead(sensor3);
       Serial.print("sensor direita");
       Serial.println(valor3);
-      for (int x = 0; x<tamanho;x++){
-    for (int y = 0; y<tamanho;y++){
+      for (int y = 0; y<tamanho;y++){
+    for (int x = 0; x<tamanho;x++){
       Serial.print(" |");
         Serial.print(cenario[x][y]);
         Serial.print("| ");
@@ -429,19 +434,19 @@ void mapeamneto(){
       if(valor1 == 0 and valor2 == 1 and valor3 ==0){
       // paredes(false,true,false);
         frente();
-        cenario  [x][y] = 1;
+        
     }
     
       else if(valor1 == 0 and valor2 == 0 and valor3 ==1){
       //  paredes(false,false,true);
         direita();
-        cenario  [x][y] = 1;
+        adicionarValorMatriz();
         }
       
       else if(valor1 == 1 and valor2 == 0 and valor3 ==0){
       // paredes(true,false,false);
         esquerda();
-        cenario  [x][y] = 1;
+        adicionarValorMatriz();
         }
     
       else if(valor1 == 0 and valor2 == 0 and valor3 ==0){
@@ -450,23 +455,23 @@ void mapeamneto(){
     
       else if(valor1 == 0 and valor2 == 1 and valor3 ==1){
           direita();
-          cenario  [x][y] = 1;
+          adicionarValorMatriz();
         }
       else if(valor1 == 1 and valor2 == 0 and valor3 ==1){
           direita();
-          cenario  [x][y] = 1;
+          adicionarValorMatriz();
         }
       else if(valor1 == 1 and valor2 == 1 and valor3 ==0){
         escolher = random(0,2);
         if (escolher == 1){
         // paredes(true,true,false);
           esquerda();
-          cenario  [x][y] = 1;
+          adicionarValorMatriz();
         }
         else if (escolher == 2){
         // paredes(true,true,false);
           frente();
-          cenario [x][y] = 1;
+       
         }
       } 
       else if(valor1 == 1 and valor2 == 1 and valor3 ==1){
@@ -485,13 +490,27 @@ void mapeamneto(){
 
 void busca()
 {
+  
+  Serial.print("O cenario pra busca");
+   for (int y = 0; y<tamanho;y++){
+    for (int x = 0; x<tamanho;x++){
+      Serial.print(" |");
+        Serial.print(cenario[x][y]);
+        Serial.print("| ");
+      }
+      Serial.println(" ");
+    }
+    Serial.println(" ");
+
   web();
   Serial.println("to AQUI ");
   yield();
-  for(x=0;x<tamanho;x++)
-  {yield();
-    for(y=0;y<tamanho;y++)
-    {yield();
+  for(int x=0;x<tamanho;x++)
+  { 
+    yield();
+    for(int y=0;y<tamanho;y++)
+    {
+      yield();
       if(cenario[x][y] == -99)  
       {
         origem[0] = x; 
@@ -523,21 +542,33 @@ void busca()
       
       }
   }
+  Serial.print("A matriz  pra busca");
+   for (int y = 0; y<tamanho;y++){
+    for (int x = 0; x<tamanho;x++){
+      Serial.print(" |");
+        Serial.print(matriz[x][y]);
+        Serial.print("| ");
+      }
+      Serial.println(" ");
+    }
+    Serial.println(" ");
   
     Serial.println("to AQUI dddd ");
+    
   int achou=0;
   while (achou==0){
    yield();
      Serial.println("to AQUI fdp");
   
-    for (y=0;y<tamanho;y++)
+    for (int x=0;x<tamanho;x++)
     {
-      for(x=0;x<tamanho;x++)
+      for(int y=0;y<tamanho;y++)
       {
+      
         if(aux[x][y]==indice)
         {
-         
           cont++;
+          Serial.println("CONT ++");
         }
       }
     }
@@ -550,19 +581,25 @@ void busca()
         {
           if(aux[x][y]==indice)
           {
-      
+           
             a=x;
             b=y;
+            Serial.println("");
+            Serial.print("A:");
+            Serial.println(a);
+            Serial.print("B:");
+            Serial.print(b);
+            Serial.println("");
             aux[x][y]=-99; //-2 na tabela auxiliar significa que foi lido o campo
             
-            if (matriz[a+1][b]==-60)  { matriz[a+1][b]=indice+1;  aux[a+1][b]=indice+1;     }
-            if (matriz[a][b+1]==-60)  { matriz[a][b+1]=indice+1;  aux[a][b+1]=indice+1;   }
-            if (matriz[a-1][b]==-60)  { matriz[a-1][b]=indice+1;  aux[a-1][b]=indice+1;     }
-            if (matriz[a][b-1]==-60)  { matriz[a][b-1]=indice+1;  aux[a][b-1]=indice+1;   }
+            if (aux[a+1][b]==-60)  { matriz[a+1][b]=indice+1;  aux[a+1][b]=indice+1;     }
+             if (aux[a][b+1]==-60)  { matriz[a][b+1]=indice+1;  aux[a][b+1]=indice+1;   }
+             if (aux[a-1][b]==-60)  { matriz[a-1][b]=indice+1;  aux[a-1][b]=indice+1;     }
+             if (aux[a][b-1]==-60)  { matriz[a][b-1]=indice+1;  aux[a][b-1]=indice+1;   }
             
-            if(matriz[a+1][b]==999 || matriz[a][b+1]==999 ||matriz[a-1][b]==999 ||matriz[a][b-1]==999 ) { Serial.println("achou = 1 ");achou=1;}
+            else if(matriz[a+1][b]==999 || matriz[a][b+1]==999 ||matriz[a-1][b]==999 ||matriz[a][b-1]==999 ) { Serial.println("achou = 1 ");achou=1;}
             cont--;
-
+            Serial.println("To dentro");
           }
         }
 
@@ -572,7 +609,7 @@ void busca()
     if (cont==0)
       {
         indice++;
-      }yield();
+      }
   } 
   Serial.println("to AQUIfdfd ");
      for (int y = 0; y<tamanho;y++){
