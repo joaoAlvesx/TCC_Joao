@@ -1,9 +1,11 @@
 #include <Wire.h>
 
 #define MPU6050_ADDR 0x68 // Endereço padrão do MPU6050
-float giroX, giroY, giroZ, acelX, acelY, acelZ, temperatura;  
+long temp_prev;
 float fator_conversao_acel = 16384;
 float fator_conversao_giro = 131;
+#define RAD_GRAUS 57.2957795131;
+float giroX, giroY, giroZ, acelX, acelY, acelZ, temperatura, aceleracao_eixo, giro_eixo, angulo_eixo, dt;
 
 void setup() {
   Serial.begin(115200);
@@ -42,9 +44,14 @@ void loop() {
   giroZ = ((Wire.read() << 8 | Wire.read())/fator_conversao_giro); 
 
   // Imprime os valores no Serial Monitor
-   Serial.print(String(acelX) + " " + String(acelY) + " " + String(acelZ));
-  Serial.println(" ///// "+String(giroX) + " " + String(giroY) + " " + String(giroZ));
+ aceleracao_eixo = atan((acelY)/sqrt(pow((acelX),2) + pow((acelZ),2)))*RAD_GRAUS;
+  //calculando o intevalo entre leituras
+  dt = (millis() - temp_prev);
   delay(100);
-
-  delay(1000); // Aguarda 1 segundo antes de ler novamente
+  temp_prev = millis();
+  //calculando o angulo
+  angulo_eixo = 0.98 *(angulo_eixo+giroY*(dt)/ 1000.0) + 0.02*aceleracao_eixo;
+  delay(100);
+  Serial.println(giroZ);
+  delay(100); // Aguarda 1 segundo antes de ler novamente
 }
