@@ -30,7 +30,7 @@ int test = 0;
 //sensores
 int sensor1 = D0;//Esquerda azul/
 int sensor2 = D3;//Frente/
-int sensor3 = D8;//Direita branco
+int sensor3 = D7;//Direita branco
 
 int valor1;
 int valor2;
