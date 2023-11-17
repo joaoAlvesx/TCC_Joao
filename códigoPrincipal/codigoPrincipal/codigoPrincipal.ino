@@ -296,16 +296,31 @@ void frente(){
 }
 
 void direita(){
-//O = 0 N = 1 L=2 S=3
- Serial.println("Direita");
- 
-   
+  mpu6050.calcGyroOffsets(true);
+  mpu6050.update();
+  
+  while (mpu6050.getAngleZ()>= -90){
+  mpu6050.update();
+  Serial.print("angleX : ");
+  Serial.print(mpu6050.getAngleX());
+  Serial.print("\tangleY : ");
+  Serial.print(mpu6050.getAngleY());
+  Serial.print("\tangleZ : ");
+  Serial.println(mpu6050.getAngleZ());
+  
   analogWrite(pwmMotorA, motorSpeed);
   digitalWrite(dirMotorA, LOW);
   analogWrite(pwmMotorB, motorSpeed);
   digitalWrite(dirMotorB, LOW);
-
-  delay(1850);
+  
+    }
+    
+  Serial.print("sair");
+  analogWrite(pwmMotorA, parar);
+  digitalWrite(dirMotorA, LOW);
+  analogWrite(pwmMotorB, parar);
+  digitalWrite(dirMotorB, LOW);
+  
 
   analogWrite(pwmMotorA, motorSpeed  );
   digitalWrite(dirMotorA, LOW);
@@ -333,11 +348,30 @@ void esquerda(){
    Serial.println("Esquerda");
 
  
+  mpu6050.calcGyroOffsets(true);
+  mpu6050.update();
+  
+  while (mpu6050.getAngleZ()<= 90){
+    
+  mpu6050.update();
+  Serial.print("angleX : ");
+  Serial.print(mpu6050.getAngleX());
+  Serial.print("\tangleY : ");
+  Serial.print(mpu6050.getAngleY());
+  Serial.print("\tangleZ : ");
+  Serial.println(mpu6050.getAngleZ());
+  
   analogWrite(pwmMotorA, motorSpeed);
   digitalWrite(dirMotorA, HIGH);
   analogWrite(pwmMotorB, motorSpeed);
   digitalWrite(dirMotorB, HIGH);
-  delay(1600);
+    }
+    
+   Serial.print("sair");
+  analogWrite(pwmMotorA, parar);
+  digitalWrite(dirMotorA, LOW);
+  analogWrite(pwmMotorB, parar);
+  digitalWrite(dirMotorB, LOW);
 
   analogWrite(pwmMotorA, motorSpeed );
   digitalWrite(dirMotorA, LOW);
