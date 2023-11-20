@@ -32,7 +32,9 @@ void direita(){
   mpu6050.calcGyroOffsets(true);
   mpu6050.update();
   
-  while (mpu6050.getAngleZ()<= 90){
+  int direita = mpu6050.getAngleZ() + 180;
+
+  while (mpu6050.getAngleZ()<= direita){
     
   mpu6050.update();
   Serial.print("angleX : ");

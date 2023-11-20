@@ -45,6 +45,13 @@ const int dirMotorB = D4;
 
 int motorSpeed = 100;
 int motorSpeedNegativo = -100;
+int parar = 0;
+
+#include <MPU6050_tockn.h>
+#include <Wire.h>
+const uint8_t scl = D5;
+const uint8_t sda = D6;
+MPU6050 mpu6050(Wire);
 
 //Matriz
 int x = 1;
@@ -93,7 +100,6 @@ void setup()
  // system_update_cpu_freq(160);
 
 cenario[1][1] = -99;
-cenario[1][2] = 1;
 cenario[13][12] = 999;
 
   pinMode(pwmMotorA , OUTPUT);
@@ -110,8 +116,19 @@ cenario[13][12] = 999;
        caminho[x][y] = 00;
       }
     }
+
+  Wire.begin(sda, scl);
+  mpu6050.begin();
+  mpu6050.calcGyroOffsets(true);
   
-  
+  mpu6050.update();
+  Serial.print("angleX : ");
+  Serial.print(mpu6050.getAngleX());
+  Serial.print("\tangleY : ");
+  Serial.print(mpu6050.getAngleY());
+  Serial.print("\tangleZ : ");
+  Serial.println(mpu6050.getAngleZ());
+
   Serial.println(""); //PULA UMA LINHA NA JANELA SERIAL
   Serial.println(""); //PULA UMA LINHA NA JANELA SERIAL
   Serial.print("Conectando a "); //ESCREVE O TEXTO NA SERIAL
@@ -187,7 +204,7 @@ void web()
   client.println("<br>"); 
   client.print("cenario"); 
   client.println("<br>"); 
-
+  
    for (int y = 0; y<tamanho;y++){
       for (int x = 0; x<tamanho;x++){
        client.print(" |");
@@ -251,24 +268,28 @@ void verificarXY(){
 void adicionarValorMatriz(){
   //O = 0 N = 1 L=2 S=3
  if(ref == 0){
+   verificarXY();
     x--;
     verificarXY();
     x--;
     verificarXY();
 }
   else if(ref == 1){
+    verificarXY();
     y--;
     verificarXY();
     y--;
     verificarXY();
 }
   else if(ref == 2){
+    verificarXY();
     x++;
     verificarXY();
     x++;
     verificarXY();
   }
   else if(ref == 3){
+    verificarXY();
     y++;
     verificarXY();
     y++;
@@ -299,8 +320,12 @@ void direita(){
   mpu6050.calcGyroOffsets(true);
   mpu6050.update();
   
-  while (mpu6050.getAngleZ()>= -90){
+  int esquerda = mpu6050.getAngleZ() - 90;
+
+  while (mpu6050.getAngleZ()>= esquerda){
   mpu6050.update();
+
+
   Serial.print("angleX : ");
   Serial.print(mpu6050.getAngleX());
   Serial.print("\tangleY : ");
@@ -351,7 +376,9 @@ void esquerda(){
   mpu6050.calcGyroOffsets(true);
   mpu6050.update();
   
-  while (mpu6050.getAngleZ()<= 90){
+  int esquerda = mpu6050.getAngleZ() + 90;
+
+  while (mpu6050.getAngleZ() <= esquerda){
     
   mpu6050.update();
   Serial.print("angleX : ");
@@ -394,12 +421,32 @@ void esquerda(){
 }
 
 void retorno(){
+
+  mpu6050.calcGyroOffsets(true);
+  mpu6050.update();
+  int retorno = mpu6050.getAngleZ() + 180;
+
+  while (mpu6050.getAngleZ()<= retorno){
     
+  mpu6050.update();
+  Serial.print("angleX : ");
+  Serial.print(mpu6050.getAngleX());
+  Serial.print("\tangleY : ");
+  Serial.print(mpu6050.getAngleY());
+  Serial.print("\tangleZ : ");
+  Serial.println(mpu6050.getAngleZ());
+  
   analogWrite(pwmMotorA, motorSpeed);
-  digitalWrite(dirMotorA, LOW);
+  digitalWrite(dirMotorA, HIGH);
   analogWrite(pwmMotorB, motorSpeed);
+  digitalWrite(dirMotorB, HIGH);
+  
+  }
+  Serial.print("sair");
+  analogWrite(pwmMotorA, parar);
+  digitalWrite(dirMotorA, LOW);
+  analogWrite(pwmMotorB, parar);
   digitalWrite(dirMotorB, LOW);
-  delay(3300);
 
   analogWrite(pwmMotorA, motorSpeed);
   digitalWrite(dirMotorA, LOW);
