@@ -56,13 +56,9 @@ void direita(){
   digitalWrite(dirMotorB, LOW);
   }
 void loop() {
-   mpu6050.update();
-  Serial.print("angleX : ");
-  Serial.print(mpu6050.getAngleX());
-  Serial.print("\tangleY : ");
-  Serial.print(mpu6050.getAngleY());
-  Serial.print("\tangleZ : ");
-  Serial.println(mpu6050.getAngleZ());
- 
-   direita();
+  Serial.println("Frente");
+  analogWrite(pwmMotorA, motorSpeed);
+  digitalWrite(dirMotorA, LOW);
+  analogWrite(pwmMotorB, motorSpeed+27);
+  digitalWrite(dirMotorB, HIGH);
 }

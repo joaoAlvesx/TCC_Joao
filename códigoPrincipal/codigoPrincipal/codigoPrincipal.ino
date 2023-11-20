@@ -1,15 +1,16 @@
 
-#define D0    16
-#define D1    5
-#define D2    4
-#define D3    0
-#define D4    2
-#define D5    14
-#define D6    12
-#define D7    13
+#define D0    16 //
+#define D1    5 //
+#define D2    4 //
+#define D3    0 //
+#define D4    2 //
+#define D5    14 //
+#define D6    12 //
+#define D7    13 //
 #define D8    15
-#define D9    3
+#define D9    3 
 #define D10   1
+#define D12   10
 
 //definir 160mhz
 
@@ -28,9 +29,9 @@ WiFiServer server(80);
 int test = 0;
 
 //sensores
-int sensor1 = D0;//Esquerda azul/
-int sensor2 = D3;//Frente/
-int sensor3 = D7;//Direita branco
+int sensor1 = D7;//Esquerda azul/
+int sensor2 = D12;//Frente/
+int sensor3 = D0;//Direita branco
 
 int valor1;
 int valor2;
@@ -306,23 +307,25 @@ void frente(){
   digitalWrite(dirMotorA, LOW);
   analogWrite(pwmMotorB, motorSpeed+27);
   digitalWrite(dirMotorB, HIGH);
-  delay(2500);
+  delay(2100);
 
   adicionarValorMatriz();
  
    Serial.print("ref =");
   Serial.print(ref);
-    test  = 1;
+  test  = 1;
 
 }
 
 void direita(){
+
+  Serial.println("Direita");
   mpu6050.calcGyroOffsets(true);
   mpu6050.update();
   
-  int esquerda = mpu6050.getAngleZ() - 90;
+  int direita = mpu6050.getAngleZ() - 95;
 
-  while (mpu6050.getAngleZ()>= esquerda){
+  while (mpu6050.getAngleZ()>= direita){
   mpu6050.update();
 
 
@@ -334,9 +337,9 @@ void direita(){
   Serial.println(mpu6050.getAngleZ());
   
   analogWrite(pwmMotorA, motorSpeed);
-  digitalWrite(dirMotorA, LOW);
+  digitalWrite(dirMotorA, HIGH);
   analogWrite(pwmMotorB, motorSpeed);
-  digitalWrite(dirMotorB, LOW);
+  digitalWrite(dirMotorB, HIGH);
   
     }
     
@@ -376,22 +379,18 @@ void esquerda(){
   mpu6050.calcGyroOffsets(true);
   mpu6050.update();
   
-  int esquerda = mpu6050.getAngleZ() + 90;
+  int esquerda = mpu6050.getAngleZ() + 95;
 
   while (mpu6050.getAngleZ() <= esquerda){
     
   mpu6050.update();
-  Serial.print("angleX : ");
-  Serial.print(mpu6050.getAngleX());
-  Serial.print("\tangleY : ");
-  Serial.print(mpu6050.getAngleY());
-  Serial.print("\tangleZ : ");
+  Serial.println(esquerda);
   Serial.println(mpu6050.getAngleZ());
   
   analogWrite(pwmMotorA, motorSpeed);
-  digitalWrite(dirMotorA, HIGH);
+  digitalWrite(dirMotorA, LOW);
   analogWrite(pwmMotorB, motorSpeed);
-  digitalWrite(dirMotorB, HIGH);
+  digitalWrite(dirMotorB, LOW);
     }
     
    Serial.print("sair");
