@@ -107,7 +107,6 @@ cenario[13][12] = 999;
   pinMode(pwmMotorB, OUTPUT);
   pinMode(dirMotorA, OUTPUT);
   pinMode(dirMotorB, OUTPUT);
-  pinMode(LED_BUILTIN, OUTPUT);
   pinMode(sensor1, INPUT);
   pinMode(sensor2, INPUT);
   pinMode(sensor3, INPUT);
@@ -163,7 +162,6 @@ void web()
 
 
   String request = client.readStringUntil('\r'); //FAZ A LEITURA DA PRIMEIRA LINHA DA REQUISIÇÃO
-  Serial.println(request); //ESCREVE A REQUISIÇÃO NA SERIAL
   client.flush(); //AGUARDA ATÉ QUE TODOS OS DADOS DE SAÍDA SEJAM ENVIADOS AO CLIENTE
   
   client.println("HTTP/1.1 200 OK"); //ESCREVE PARA O CLIENTE A VERSÃO DO HTTP
@@ -304,7 +302,7 @@ void frente(){
   digitalWrite(dirMotorA, LOW);
   analogWrite(pwmMotorB, motorSpeed+27);
   digitalWrite(dirMotorB, HIGH);
-  delay(1000);
+  delay(800);
 
  
    Serial.print("ref =");
@@ -316,10 +314,9 @@ void frente(){
 void direita(){
 
   Serial.println("Direita");
-  mpu6050.calcGyroOffsets(true);
   mpu6050.update();
   
-  int direita = mpu6050.getAngleZ() - 105;
+  int direita = mpu6050.getAngleZ() - 125;
 
   while (mpu6050.getAngleZ()>= direita){
   mpu6050.update();
@@ -350,7 +347,7 @@ void direita(){
   digitalWrite(dirMotorA, LOW);
   analogWrite(pwmMotorB, motorSpeed);
   digitalWrite(dirMotorB, HIGH);
-  delay(400);
+  delay(200);
 
   if(ref == 0)
     ref = 1;
@@ -373,10 +370,9 @@ void esquerda(){
   Serial.println("Esquerda");
 
  
-  mpu6050.calcGyroOffsets(true);
   mpu6050.update();
   
-  int esquerda = mpu6050.getAngleZ() + 105;
+  int esquerda = mpu6050.getAngleZ() + 125;
 
   while (mpu6050.getAngleZ() <= esquerda){
     
@@ -400,7 +396,7 @@ void esquerda(){
   digitalWrite(dirMotorA, LOW);
   analogWrite(pwmMotorB, motorSpeed +27);
   digitalWrite(dirMotorB, HIGH);
-  delay(400);
+  delay(200);
 
   if(ref == 0)
     ref = 3;
@@ -418,7 +414,6 @@ void esquerda(){
 
 void retorno(){
 
-  mpu6050.calcGyroOffsets(true);
   mpu6050.update();
   int retorno = mpu6050.getAngleZ() + 180;
 
