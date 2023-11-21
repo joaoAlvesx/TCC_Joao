@@ -160,10 +160,7 @@ void web()
 {
   yield();
   WiFiClient client = server.available(); //VERIFICA SE ALGUM CLIENTE ESTÁ CONECTADO NO SERVIDOR
-  if (!client) { //SE NÃO EXISTIR CLIENTE CONECTADO, FAZ
-  return; //REEXECUTA O PROCESSO ATÉ QUE ALGUM CLIENTE SE CONECTE AO SERVIDOR
-  }
-  Serial.println("Novo cliente se conectou!"); //ESCREVE O TEXTO NA SERIAL
+
 
   String request = client.readStringUntil('\r'); //FAZ A LEITURA DA PRIMEIRA LINHA DA REQUISIÇÃO
   Serial.println(request); //ESCREVE A REQUISIÇÃO NA SERIAL
@@ -307,9 +304,8 @@ void frente(){
   digitalWrite(dirMotorA, LOW);
   analogWrite(pwmMotorB, motorSpeed+27);
   digitalWrite(dirMotorB, HIGH);
-  delay(2100);
+  delay(1000);
 
-  adicionarValorMatriz();
  
    Serial.print("ref =");
   Serial.print(ref);
@@ -323,7 +319,7 @@ void direita(){
   mpu6050.calcGyroOffsets(true);
   mpu6050.update();
   
-  int direita = mpu6050.getAngleZ() - 95;
+  int direita = mpu6050.getAngleZ() - 105;
 
   while (mpu6050.getAngleZ()>= direita){
   mpu6050.update();
@@ -337,9 +333,9 @@ void direita(){
   Serial.println(mpu6050.getAngleZ());
   
   analogWrite(pwmMotorA, motorSpeed);
-  digitalWrite(dirMotorA, HIGH);
+  digitalWrite(dirMotorA,LOW);
   analogWrite(pwmMotorB, motorSpeed);
-  digitalWrite(dirMotorB, HIGH);
+  digitalWrite(dirMotorB, LOW);
   
     }
     
@@ -354,7 +350,7 @@ void direita(){
   digitalWrite(dirMotorA, LOW);
   analogWrite(pwmMotorB, motorSpeed);
   digitalWrite(dirMotorB, HIGH);
-  delay(2400);
+  delay(400);
 
   if(ref == 0)
     ref = 1;
@@ -373,13 +369,14 @@ void direita(){
   
 
 void esquerda(){
-   Serial.println("Esquerda");
+   
+  Serial.println("Esquerda");
 
  
   mpu6050.calcGyroOffsets(true);
   mpu6050.update();
   
-  int esquerda = mpu6050.getAngleZ() + 95;
+  int esquerda = mpu6050.getAngleZ() + 105;
 
   while (mpu6050.getAngleZ() <= esquerda){
     
@@ -388,9 +385,9 @@ void esquerda(){
   Serial.println(mpu6050.getAngleZ());
   
   analogWrite(pwmMotorA, motorSpeed);
-  digitalWrite(dirMotorA, LOW);
+  digitalWrite(dirMotorA, HIGH);
   analogWrite(pwmMotorB, motorSpeed);
-  digitalWrite(dirMotorB, LOW);
+  digitalWrite(dirMotorB, HIGH);
     }
     
    Serial.print("sair");
@@ -403,7 +400,7 @@ void esquerda(){
   digitalWrite(dirMotorA, LOW);
   analogWrite(pwmMotorB, motorSpeed +27);
   digitalWrite(dirMotorB, HIGH);
-  delay(2400);
+  delay(400);
 
   if(ref == 0)
     ref = 3;
@@ -451,7 +448,7 @@ void retorno(){
   digitalWrite(dirMotorA, LOW);
   analogWrite(pwmMotorB, motorSpeed+27);
   digitalWrite(dirMotorB, HIGH);
-  delay(2500);
+  delay(1000);
 //O = 0 N = 1 L=2 S=3
   if(ref == 0)
     ref = 2;
@@ -514,6 +511,7 @@ void mapeamneto(){
       if(valor1 == 0 and valor2 == 1 and valor3 ==0){
       // paredes(false,true,false);
         frente();
+        adicionarValorMatriz();
         
     }
     
@@ -542,17 +540,12 @@ void mapeamneto(){
           adicionarValorMatriz();
         }
       else if(valor1 == 1 and valor2 == 1 and valor3 ==0){
-        escolher = random(0,2);
-        if (escolher == 1){
-        // paredes(true,true,false);
+       
           esquerda();
           adicionarValorMatriz();
-        }
-        else if (escolher == 2){
-        // paredes(true,true,false);
-          frente();
        
-        }
+       
+        
       } 
       else if(valor1 == 1 and valor2 == 1 and valor3 ==1){
           delay(1000);
