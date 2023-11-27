@@ -37,7 +37,6 @@ int valor1;
 int valor2;
 int valor3;
 
-//https://www.sigmdel.ca/michel/program/esp8266/arduino/watchdogs_en.html
 //MOTORES
 const int pwmMotorA = D1;
 const int pwmMotorB = D2;
@@ -242,7 +241,12 @@ void web()
   yield();
 }
 void verificarXY(){
-      if(cenario[x][y] == -99)  
+      
+      if(cenario[x][y] == 5)  
+      {
+        cenario[x][y]= 1;
+      }
+      else if(cenario[x][y] == -99)  
       {
         Serial.print("Nao adiciono valor");
       }
@@ -302,7 +306,7 @@ void frente(){
   digitalWrite(dirMotorA, LOW);
   analogWrite(pwmMotorB, motorSpeed+27);
   digitalWrite(dirMotorB, HIGH);
-  delay(800);
+  delay(400);
 
  
    Serial.print("ref =");
@@ -320,13 +324,7 @@ void direita(){
 
   while (mpu6050.getAngleZ()>= direita){
   mpu6050.update();
-
-
-  Serial.print("angleX : ");
-  Serial.print(mpu6050.getAngleX());
-  Serial.print("\tangleY : ");
-  Serial.print(mpu6050.getAngleY());
-  Serial.print("\tangleZ : ");
+  Serial.println(direita);
   Serial.println(mpu6050.getAngleZ());
   
   analogWrite(pwmMotorA, motorSpeed);
@@ -349,6 +347,7 @@ void direita(){
   digitalWrite(dirMotorB, HIGH);
   delay(200);
 
+ //O = 0 N = 1 L=2 S=3
   if(ref == 0)
     ref = 1;
   else if(ref == 1)
@@ -398,6 +397,7 @@ void esquerda(){
   digitalWrite(dirMotorB, HIGH);
   delay(200);
 
+ //O = 0 N = 1 L=2 S=3
   if(ref == 0)
     ref = 3;
   else if(ref == 3)
@@ -466,7 +466,7 @@ void mapeamneto(){
 
       //O = 0 N = 1 L=2 S=3
       
-
+      cenario [x][y] = 5;
       Serial.println("dentro do  while");
       Serial.println("");
       analogWrite(pwmMotorA, 0  );
@@ -550,7 +550,7 @@ void mapeamneto(){
       
      }
     web();  
-    delay(1000);
+    delay(500);
     
  
   }
@@ -736,7 +736,9 @@ void busca()
   Serial.println(" sai");
   delay(1000);
   busca();
-  web();
+  while (true){
+    web();
+  }
  
  
 
