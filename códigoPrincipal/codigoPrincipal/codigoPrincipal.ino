@@ -11,6 +11,7 @@
 #define D9    3 
 #define D10   1
 #define D12   10
+#define D13   9
 
 //definir 160mhz
 
@@ -29,9 +30,9 @@ WiFiServer server(80);
 int test = 0;
 
 //sensores
-int sensor1 = D7;//Esquerda azul/
+int sensor1 = D0;//Esquerda azul/
 int sensor2 = D12;//Frente/
-int sensor3 = D0;//Direita branco
+int sensor3 = D13;//Direita branco
 
 int valor1;
 int valor2;
@@ -154,7 +155,7 @@ cenario[13][12] = 999;
    yield();
 }
 
-void web()
+/*void web()
 {
   yield();
   WiFiClient client = server.available(); //VERIFICA SE ALGUM CLIENTE ESTÁ CONECTADO NO SERVIDOR
@@ -236,10 +237,10 @@ void web()
   client.println("<center><font size='5'></center>"); //ESCREVE "Seja bem vindo!" NA PÁGINA
   client.println("</html>"); //FECHA A TAG "html"
   delay(1); //INTERVALO DE 1 MILISEGUNDO
-  Serial.println("Cliente desconectado"); //ESCREVE O TEXTO NA SERIAL
+ 
   Serial.println(""); //PULA UMA LINHA NA JANELA SERIAL
   yield();
-}
+}*/
 void verificarXY(){
       
       if(cenario[x][y] == 5)  
@@ -318,11 +319,11 @@ void frente(){
 void direita(){
 
   Serial.println("Direita");
-  mpu6050.update();
+ /* mpu6050.update();
   
   int direita = mpu6050.getAngleZ() - 125;
 
-  while (mpu6050.getAngleZ()>= direita){
+ while (mpu6050.getAngleZ()>= direita){
   mpu6050.update();
   Serial.println(direita);
   Serial.println(mpu6050.getAngleZ());
@@ -332,7 +333,7 @@ void direita(){
   analogWrite(pwmMotorB, motorSpeed);
   digitalWrite(dirMotorB, LOW);
   
-    }
+    }*/
     
   Serial.print("sair");
   analogWrite(pwmMotorA, parar);
@@ -369,7 +370,7 @@ void esquerda(){
   Serial.println("Esquerda");
 
  
-  mpu6050.update();
+ /* mpu6050.update();
   
   int esquerda = mpu6050.getAngleZ() + 125;
 
@@ -383,7 +384,7 @@ void esquerda(){
   digitalWrite(dirMotorA, HIGH);
   analogWrite(pwmMotorB, motorSpeed);
   digitalWrite(dirMotorB, HIGH);
-    }
+    }*/
     
    Serial.print("sair");
   analogWrite(pwmMotorA, parar);
@@ -414,7 +415,7 @@ void esquerda(){
 
 void retorno(){
 
-  mpu6050.update();
+ /*mpu6050.update();
   int retorno = mpu6050.getAngleZ() + 180;
 
   while (mpu6050.getAngleZ()<= retorno){
@@ -432,7 +433,7 @@ void retorno(){
   analogWrite(pwmMotorB, motorSpeed);
   digitalWrite(dirMotorB, HIGH);
   
-  }
+  }*/
   Serial.print("sair");
   analogWrite(pwmMotorA, parar);
   digitalWrite(dirMotorA, LOW);
@@ -460,12 +461,13 @@ void mapeamneto(){
   yield();
   int final_labirinto = 0;
   Serial.println("dentro da map wile");
-  web();
+  //web();
   while (final_labirinto == 0){
   
 
       //O = 0 N = 1 L=2 S=3
       
+       yield();
       cenario [x][y] = 5;
       Serial.println("dentro do  while");
       Serial.println("");
@@ -549,8 +551,8 @@ void mapeamneto(){
       final_labirinto = 1;
       
      }
-    web();  
-    delay(500);
+    //web();  
+    delay(100);
     
  
   }
@@ -570,7 +572,7 @@ void busca()
     }
     Serial.println(" ");
 
-  web();
+ // web();
   Serial.println("to AQUI ");
   yield();
   for(int x=0;x<tamanho;x++)
@@ -725,7 +727,7 @@ void busca()
     Serial.println(" ");
     delay(500);
  
-    web();
+    //web();
   }
 
   void loop()
@@ -736,9 +738,7 @@ void busca()
   Serial.println(" sai");
   delay(1000);
   busca();
-  while (true){
-    web();
-  }
+ 
  
  
 
