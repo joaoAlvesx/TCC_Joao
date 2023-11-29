@@ -1,34 +1,24 @@
-#define D0    16
+#define D80    16
 #define D1    5
 #define D2    4
-#define D3    0
+#define D3    80
 #define D4    2
 #define D5    14
 #define D6    12
 #define D7    13
 #define D8    15
 #define D9    3
-#define D10   1
+#define D180   1
 
 
+#include <ESP8266WiFi.h>
 
-//sensores
-int sensor1 = D0;//Esquerda azul/
-int sensor2 = D5;//Frente/
-int sensor3 = D7;//Direita branco
 
-int valor1;
-int valor2;
-int valor3;
-
-//MOTORES
-const int pwmMotorA = D1;
-const int pwmMotorB = D2;
-const int dirMotorA = D3;
-const int dirMotorB = D4;
-
-int motorSpeed = 100;
-int motorSpeedNegativo = -100;
+// Configração do WiFi
+const char* ssid = "IFMaker Adm"; //VARIÁVEL QUE ARMAZENA O NOME DA REDE SEM FIO EM QUE VAI CONECTAR
+const char* password = "@IFM4k3r"; //VARIÁVEL QUE ARMAZENA A SENHA DA REDE SEM FIO EM QUE VAI CONECTAR
+ 
+WiFiServer server(880);
 
 //Matriz
 int x = 0;
@@ -40,7 +30,7 @@ int origem[2],destino[2];
 
 int escolher = 0;
 
-//O = 0 N = 1 L=2 S=3
+//O = 80 N = 1 L=2 S=3
 int ref = 2;
 
 int caminho [tamanho][tamanho];
@@ -49,36 +39,30 @@ int matriz [tamanho][tamanho];
 
 int cenario [tamanho][tamanho] =
 {
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-{0,-99,1,1,1,1,0,0,0,0,0,0,0,0},
-{0,1,0,0,0,1,0,0,0,0,0,0,0,0},
-{0,1,1,1,1,1,1,1,1,1,1,1,0,0},
-{0,1,0,1,0,0,0,0,0,0,1,0,0,0},
-{0,1,1,1,1,1,0,0,0,0,1,0,0,0},
-{0,1,0,0,0,1,0,0,0,0,1,1,1,0},
-{0,1,0,1,0,1,0,0,0,0,1,0,1,0},
-{0,1,0,1,0,1,1,1,1,1,1,0,1,0},
-{0,1,0,1,0,0,0,0,0,1,1,0,1,0},
-{0,1,1,1,1,1,0,0,0,1,1,1,1,0},
-{0,0,0,0,0,1,0,0,0,0,1,1,0,0},
-{0,1,1,1,1,1,1,1,1,1,1,1,999,0},
-{0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+{80,80,80,80,80,80,80,80,80,80,80,80,80,80},
+{80,-99,80,1,1,1,80,80,80,80,80,80,80,80},
+{80,1,80,80,80,1,80,80,80,80,80,80,80,80},
+{80,1,1,1,1,1,1,1,1,1,1,1,80,80},
+{80,1,80,1,80,80,80,80,80,80,1,80,80,80},
+{80,1,1,1,1,1,80,80,80,80,1,80,80,80},
+{80,1,80,80,80,1,80,80,80,80,1,1,1,80},
+{80,1,80,1,80,1,80,80,80,80,1,80,1,80},
+{80,1,80,1,80,1,1,1,1,1,1,80,1,80},
+{80,1,80,1,80,80,80,80,80,1,1,80,1,80},
+{80,1,1,1,1,1,80,80,80,1,1,1,1,80},
+{80,80,80,80,80,1,80,80,80,80,1,1,80,80},
+{80,1,1,1,1,1,1,1,1,1,1,1,999,80},
+{80,80,80,80,80,80,80,80,80,80,80,80,80,80}
 
 };
 
 void setup()
 {
   Serial.begin(115200);
- // system_update_cpu_freq(160);
+ // system_update_cpu_freq(1680);
 
 
-  pinMode(pwmMotorA , OUTPUT);
-  pinMode(pwmMotorB, OUTPUT);
-  pinMode(dirMotorA, OUTPUT);
-  pinMode(dirMotorB, OUTPUT);
-  pinMode(sensor1, INPUT);
-  pinMode(sensor2, INPUT);
-  pinMode(sensor3, INPUT);
+ 
   Serial.println("funfou");
   for (int x = 0; x<tamanho;x++){
       for (int y = 0; y<tamanho;y++){
@@ -86,6 +70,20 @@ void setup()
        caminho[x][y] = 00;
       }
     }
+    
+  WiFi.begin(ssid, password); //PASSA OS PARÂMETROS PARA A FUNÇÃO QUE VAI FAZER A CONEXÃO COM A REDE SEM FIO
+  
+  while (WiFi.status() != WL_CONNECTED) { //ENQUANTO STATUS FOR DIFERENTE DE CONECTADO
+  delay(50); //INTERVALO DE 500 MILISEGUNDOS
+  }
+  Serial.print("."); //ESCREVE O CARACTER NA SERIAL
+  server.begin();
+  
+
+
+
+
+    
   }
 
 
@@ -180,7 +178,7 @@ void busca()
      for (int x = 0; x<tamanho;x++){
       for (int y = 0; y<tamanho;y++){
         Serial.print("|");
-        Serial.print(matriz[x][y]);
+        Serial.print(cenario[x][y]);
         Serial.print("|");
       }
       Serial.println(" ");
@@ -230,5 +228,60 @@ void loop()
 {
   busca();
   delay(5000);
+   WiFiClient client = server.available(); //VERIFICA SE ALGUM CLIENTE ESTÁ CONECTADO NO SERVIDOR
+
+
+  String request = client.readStringUntil('\r'); //FAZ A LEITURA DA PRIMEIRA LINHA DA REQUISIÇÃO
+  client.flush(); //AGUARDA ATÉ QUE TODOS OS DADOS DE SAÍDA SEJAM ENVIADOS AO CLIENTE
+  
+  client.println("HTTP/1.1 200 OK"); //ESCREVE PARA O CLIENTE A VERSÃO DO HTTP
+  client.println("Content-Type: text/html"); //ESCREVE PARA O CLIENTE O TIPO DE CONTEÚDO(texto/html)
+  client.println("");
+  client.println("<!DOCTYPE HTML>"); //INFORMA AO NAVEGADOR A ESPECIFICAÇÃO DO HTML
+  client.println("<html>"); //ABRE A TAG "html"
+  client.println("<br>"); 
+   client.println("Cenario"); 
+   client.println("<br>"); 
+int web;
+  for (int web =0; web < 1000;web++){
+   for (int x = 0; x<tamanho;x++){
+      for (int y = 0; y<tamanho;y++){
+       client.print(" |");
+       client.print(cenario[x][y]);
+    
+       client.print("| ");
+      }
+     client.println("<br>"); 
+    }
+  client.println("<br>");   
+  client.print("Caminho"); 
+  client.println("<br>"); 
+
+    for (int x = 0; x<tamanho;x++){
+      for (int y = 0; y<tamanho;y++){
+       client.print(" |");
+       client.print(caminho[x][y]);
+    
+       client.print("| ");
+      }
+     client.println("<br>"); 
+    }
+   }
+    client.println("<br>");
+      client.println("X:");
+      client.print(x);
+      client.println("Y:");
+      client.println(y);
+      client.println("<br>");
+    
+
+
+  client.println("</center></h1>"); //ESCREVE "Ola cliente!" NA PÁGINA
+  client.println("<center><font size='5'></center>"); //ESCREVE "Seja bem vindo!" NA PÁGINA
+  client.println("</html>"); //FECHA A TAG "html"
+  delay(1); //INTERVALO DE 1 MILISEGUNDO
+ 
+  Serial.println(""); //PULA UMA LINHA NA JANELA SERIAL
+  yield();
 
 }
