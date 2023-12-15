@@ -56,37 +56,6 @@ int cenario [tamanho][tamanho] =
 
 };
 
-void setup()
-{
-  Serial.begin(115200);
- // system_update_cpu_freq(1680);
-
-
- 
-  Serial.println("funfou");
-  for (int x = 0; x<tamanho;x++){
-      for (int y = 0; y<tamanho;y++){
-      aux[x][y] = -20;
-       caminho[x][y] = 00;
-      }
-    }
-    
-  WiFi.begin(ssid, password); //PASSA OS PARÂMETROS PARA A FUNÇÃO QUE VAI FAZER A CONEXÃO COM A REDE SEM FIO
-  
-  while (WiFi.status() != WL_CONNECTED) { //ENQUANTO STATUS FOR DIFERENTE DE CONECTADO
-  delay(50); //INTERVALO DE 500 MILISEGUNDOS
-  }
-  Serial.print("."); //ESCREVE O CARACTER NA SERIAL
-  server.begin();
-  
-
-
-
-
-    
-  }
-
-
 void busca()
 {
 
@@ -221,14 +190,55 @@ void busca()
  
     
   }
+void setup()
+{
+  Serial.begin(115200);
+ // system_update_cpu_freq(1680);
+
+
+  busca();
+  Serial.println("funfou");
+  
+    
+  WiFi.begin(ssid, password); //PASSA OS PAR METROS PARA A FUNÇÃO QUE VAI FAZER A CONEXÃO COM A REDE SEM FIO
+ 
+  while (WiFi.status() != WL_CONNECTED) { //ENQUANTO STATUS FOR DIFERENTE DE CONECTADO
+  delay(500); //INTERVALO DE 500 MILISEGUNDOS
+  Serial.print("."); //ESCREVE O CARACTER NA SERIAL
+ 
+  }
+  Serial.println(""); //PULA UMA LINHA NA JANELA SERIAL
+  Serial.print("Conectado a rede sem fio "); //ESCREVE O TEXTO NA SERIAL
+  Serial.println(ssid); //ESCREVE O NOME DA REDE NA SERIAL
+  server.begin(); //INICIA O SERVIDOR PARA RECEBER DADOS NA PORTA DEFINIDA EM "WiFiServer server(porta);"
+    yield();
+  Serial.println("Servidor iniciado"); //ESCREVE O TEXTO NA SERIAL
+ 
+  Serial.print("IP para se conectar ao NodeMCU: "); //ESCREVE O TEXTO NA SERIAL
+  Serial.print("http://"); //ESCREVE O TEXTO NA SERIAL
+  Serial.println(WiFi.localIP()); //ESCREVE NA SERIAL O IP RECEBIDO DENTRO DA REDE SEM FIO (O IP NESSA PRÁTICA É RECEBIDO DE FORMA AUTOMÁTICA)
+
+
+
+  
+
+
+
+
+    
+  }
+
+
+
 
 
 
 void loop()
 {
-  busca();
-  delay(5000);
-   WiFiClient client = server.available(); //VERIFICA SE ALGUM CLIENTE ESTÁ CONECTADO NO SERVIDOR
+ 
+  delay(500);
+  yield();
+  WiFiClient client = server.available(); //VERIFICA SE ALGUM CLIENTE ESTÁ CONECTADO NO SERVIDOR
 
 
   String request = client.readStringUntil('\r'); //FAZ A LEITURA DA PRIMEIRA LINHA DA REQUISIÇÃO
@@ -239,42 +249,13 @@ void loop()
   client.println("");
   client.println("<!DOCTYPE HTML>"); //INFORMA AO NAVEGADOR A ESPECIFICAÇÃO DO HTML
   client.println("<html>"); //ABRE A TAG "html"
+
+  
   client.println("<br>"); 
-   client.println("Cenario"); 
+    client.println("Cenario");
    client.println("<br>"); 
-int web;
-  for (int web =0; web < 1000;web++){
-   for (int x = 0; x<tamanho;x++){
-      for (int y = 0; y<tamanho;y++){
-       client.print(" |");
-       client.print(cenario[x][y]);
-    
-       client.print("| ");
-      }
-     client.println("<br>"); 
-    }
-  client.println("<br>");   
-  client.print("Caminho"); 
-  client.println("<br>"); 
-
-    for (int x = 0; x<tamanho;x++){
-      for (int y = 0; y<tamanho;y++){
-       client.print(" |");
-       client.print(caminho[x][y]);
-    
-       client.print("| ");
-      }
-     client.println("<br>"); 
-    }
-   }
-    client.println("<br>");
-      client.println("X:");
-      client.print(x);
-      client.println("Y:");
-      client.println(y);
-      client.println("<br>");
-    
-
+  
+ 
 
   client.println("</center></h1>"); //ESCREVE "Ola cliente!" NA PÁGINA
   client.println("<center><font size='5'></center>"); //ESCREVE "Seja bem vindo!" NA PÁGINA

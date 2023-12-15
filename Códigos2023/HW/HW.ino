@@ -16,7 +16,7 @@
 
 
 
-int sensor1 = D7;//Esquerda azul/
+int sensor1 = D13;//Esquerda azul/
 int sensor2 = D12;//Frente/
 int sensor3 = D0;//Direita branco
 

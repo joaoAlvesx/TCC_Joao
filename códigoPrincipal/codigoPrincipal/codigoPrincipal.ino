@@ -30,9 +30,10 @@ WiFiServer server(80);
 int test = 0;
 
 //sensores
-int sensor1 = D0;//Esquerda azul/
+
+int sensor1 = D7;//Esquerda azul/
 int sensor2 = D12;//Frente/
-int sensor3 = D13;//Direita branco
+int sensor3 = D0;//Direita branco
 
 int valor1;
 int valor2;
@@ -155,7 +156,7 @@ cenario[13][12] = 999;
    yield();
 }
 
-/*void web()
+void web()
 {
   yield();
   WiFiClient client = server.available(); //VERIFICA SE ALGUM CLIENTE ESTÁ CONECTADO NO SERVIDOR
@@ -240,7 +241,7 @@ cenario[13][12] = 999;
  
   Serial.println(""); //PULA UMA LINHA NA JANELA SERIAL
   yield();
-}*/
+}
 void verificarXY(){
       
       if(cenario[x][y] == 5)  
@@ -305,9 +306,9 @@ void frente(){
   Serial.println("Frente");
   analogWrite(pwmMotorA, motorSpeed);
   digitalWrite(dirMotorA, LOW);
-  analogWrite(pwmMotorB, motorSpeed+27);
+  analogWrite(pwmMotorB, motorSpeed);
   digitalWrite(dirMotorB, HIGH);
-  delay(400);
+  delay(2000);
 
  
    Serial.print("ref =");
@@ -319,7 +320,7 @@ void frente(){
 void direita(){
 
   Serial.println("Direita");
- /* mpu6050.update();
+ mpu6050.update();
   
   int direita = mpu6050.getAngleZ() - 125;
 
@@ -333,7 +334,7 @@ void direita(){
   analogWrite(pwmMotorB, motorSpeed);
   digitalWrite(dirMotorB, LOW);
   
-    }*/
+    }
     
   Serial.print("sair");
   analogWrite(pwmMotorA, parar);
@@ -370,9 +371,9 @@ void esquerda(){
   Serial.println("Esquerda");
 
  
- /* mpu6050.update();
+  mpu6050.update();
   
-  int esquerda = mpu6050.getAngleZ() + 125;
+  int esquerda = mpu6050.getAngleZ() + 150;
 
   while (mpu6050.getAngleZ() <= esquerda){
     
@@ -384,7 +385,7 @@ void esquerda(){
   digitalWrite(dirMotorA, HIGH);
   analogWrite(pwmMotorB, motorSpeed);
   digitalWrite(dirMotorB, HIGH);
-    }*/
+    }
     
    Serial.print("sair");
   analogWrite(pwmMotorA, parar);
@@ -538,7 +539,7 @@ void mapeamneto(){
         }
       else if(valor1 == 1 and valor2 == 1 and valor3 ==0){
        
-          esquerda();
+          frente();
           adicionarValorMatriz();
        
        
@@ -732,14 +733,25 @@ void busca()
 
   void loop()
 { 
-  yield();
-  delay(100);
-  mapeamneto();
-  Serial.println(" sai");
-  delay(1000);
-  busca();
- 
- 
+ frente();
+ analogWrite(pwmMotorA, 0  );
+      digitalWrite(dirMotorA, LOW);
+      analogWrite(pwmMotorB,0);
+      digitalWrite(dirMotorB, LOW);
+      delay(1000);
+  frente();
+  analogWrite(pwmMotorA, 0  );
+      digitalWrite(dirMotorA, LOW);
+      analogWrite(pwmMotorB,0);
+      digitalWrite(dirMotorB, LOW);
+      delay(1000);
+  esquerda();
+  analogWrite(pwmMotorA, 0  );
+      digitalWrite(dirMotorA, LOW);
+      analogWrite(pwmMotorB,0);
+      digitalWrite(dirMotorB, LOW);
+      delay(1000);
+  frente();
  
 
 
