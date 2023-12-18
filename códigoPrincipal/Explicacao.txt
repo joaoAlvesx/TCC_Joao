@@ -1,0 +1,2 @@
+CodpPrincipal = arquivo com codigo completo, mapeamento e busca
+CodpPrincipal2 = somente busca em largura
