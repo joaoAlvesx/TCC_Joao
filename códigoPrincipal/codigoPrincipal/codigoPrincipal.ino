@@ -22,8 +22,8 @@
 
 
 // Configração do WiFi
-const char* ssid = "IFMaker Adm"; //VARIÁVEL QUE ARMAZENA O NOME DA REDE SEM FIO EM QUE VAI CONECTAR
-const char* password = "@IFM4k3r"; //VARIÁVEL QUE ARMAZENA A SENHA DA REDE SEM FIO EM QUE VAI CONECTAR
+const char* ssid = ""; //VARIÁVEL QUE ARMAZENA O NOME DA REDE SEM FIO EM QUE VAI CONECTAR
+const char* password = ""; //VARIÁVEL QUE ARMAZENA A SENHA DA REDE SEM FIO EM QUE VAI CONECTAR
  
 WiFiServer server(80);
 
@@ -416,7 +416,7 @@ void esquerda(){
 
 void retorno(){
 
- /*mpu6050.update();
+  mpu6050.update();
   int retorno = mpu6050.getAngleZ() + 180;
 
   while (mpu6050.getAngleZ()<= retorno){
@@ -434,7 +434,7 @@ void retorno(){
   analogWrite(pwmMotorB, motorSpeed);
   digitalWrite(dirMotorB, HIGH);
   
-  }*/
+  }
   Serial.print("sair");
   analogWrite(pwmMotorA, parar);
   digitalWrite(dirMotorA, LOW);
@@ -733,25 +733,12 @@ void busca()
 
   void loop()
 { 
- frente();
- analogWrite(pwmMotorA, 0  );
-      digitalWrite(dirMotorA, LOW);
-      analogWrite(pwmMotorB,0);
-      digitalWrite(dirMotorB, LOW);
-      delay(1000);
-  frente();
-  analogWrite(pwmMotorA, 0  );
-      digitalWrite(dirMotorA, LOW);
-      analogWrite(pwmMotorB,0);
-      digitalWrite(dirMotorB, LOW);
-      delay(1000);
-  esquerda();
-  analogWrite(pwmMotorA, 0  );
-      digitalWrite(dirMotorA, LOW);
-      analogWrite(pwmMotorB,0);
-      digitalWrite(dirMotorB, LOW);
-      delay(1000);
-  frente();
+delay(100);
+mapeamneto();
+Serial.println(" Comecar busca");
+delay(1000);
+busca();
+web();
  
 
 
