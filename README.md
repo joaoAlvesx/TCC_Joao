@@ -4,6 +4,5 @@ DISPOSITIVO AUTÔNOMO PARA MAPEAMENTO E SOLUÇÃO DE LABIRINTOS UTILIZANDO ESP82
 
 🏫 Orientador: Me. Marcelo Christiano da França Júnior</br>
 
-🗄️ Organização do repositório: Existem as pasta de codigos referentes a 2022 e 2023, onde nelas contem os codigos usados como base para a 
-formação do codigo principal 
+
 
